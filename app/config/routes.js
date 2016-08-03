@@ -1,13 +1,14 @@
 import React from 'react';
-import AddRushee from '../components/AddRushee.jsx';
-import TodoApp from '../components/TestTodo.jsx';
+import MainWrapper from '../components/MainWrapper.jsx';
 import Home from '../components/Home.jsx';
-import { Route } from 'react-router';
+import AddAllUsers from '../components/AddAllUsers.jsx';
+import { Route, IndexRoute } from 'react-router';
 
 export default (
   <Route>
-    <Route path="/" component={Home}></Route>
-    <Route path="/add-rushee" component={AddRushee}></Route>
-    <Route path="/todoapp" component={TodoApp}></Route>
+    <Route path="/" component={MainWrapper}>
+      <IndexRoute component={Home} />
+    </Route>
+    <Route path="/add-all" component={AddAllUsers}></Route>
   </Route>
 );

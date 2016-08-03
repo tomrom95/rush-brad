@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import FbApp from './FirebaseInit.jsx';
+import firebase from 'firebase';
 
 class RusheeCard extends React.Component {
   constructor(props) {
@@ -11,24 +11,22 @@ class RusheeCard extends React.Component {
   }
 
   componentWillMount() {
-    var self = this;
-    var ref = new Firebase(
-      'https://rush-brad.firebaseio.com/rushees'
-    ).child(this.props.rusheeKey);
-    ref.on('value', (snap) => {self.state.rushee = snap});
-  }
-
-  componentWillUnmount() {
-    this.firebaseRef.off();
+    var ref = firebase.database().ref('rushees/' + this.props.rusheeKey);
+    ref.once('value', function(snap) {
+      this.setState({rushee: snap.val()});
+    }.bind(this));
   }
 
   render() {
-    var rushee_obj = this.state.rushee.val();
+    var rushee_obj = this.state.rushee;
+    if (rushee_obj == null) {
+      return (<div>error</div>);
+    }
     var rating = rushee_obj.rating == -1
       ? 'Rushee has not been rated'
       : rushee_obj.rating;
     return (
-      <div className="col-xs-4" key={this.state.rushee.key()}>
+      <div className="col-xs-4" key={this.state.rushee.key}>
         <div className="card text-center">
           <div className="card-block text-center">
             <h4 className="card-title">
@@ -38,7 +36,7 @@ class RusheeCard extends React.Component {
           <div className="img-crop">
             <img
               className="card-img-top"
-              src="https://scontent.fsnc1-1.fna.fbcdn.net/v/t1.0-9/12096477_10203484028861755_7392343876069609310_n.jpg?_nc_eui=3QSkl5wcUHzyqovKNuUaBt0Y6xU&oh=4ae90a59772033c4cadd749f1568dfcd&oe=58278C3C"
+              src="https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
               alt="Rushee photo"
             />
           </div>
