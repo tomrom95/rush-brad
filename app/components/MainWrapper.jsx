@@ -20,11 +20,11 @@ class MainWrapper extends React.Component {
   }
 
   login() {
-    var provider = new firebase.auth.GoogleAuthProvider();
+    var provider = new firebase.auth.FacebookAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function(result) {
       var user = result.user;
+      console.log(user);
       this.firebaseRef.ref('users/' + user.uid).set({
-        'email': user.email,
         'displayName': user.displayName,
       });
     }.bind(this)).catch(function(error) {

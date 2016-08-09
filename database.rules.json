@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "whitelist": {
+      ".read": "false",
+      ".write": "false"
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "user-profiles": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "rushees": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

@@ -42,6 +42,12 @@ class Home extends React.Component {
     return (
       <div className="container-fluid">
         <div className="row">
+          <div className="col-md-6"><h3>Rushees</h3></div>
+          <div className="col-md-6"><span className="pull-right">
+            <Link to="/add-rushee">Add Rushee</Link>
+          </span></div>
+        </div>
+        <div className="row">
           { this.state.rushees.map(createRushee) }
         </div>
       </div>

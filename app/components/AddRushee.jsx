@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import FbApp from './FirebaseInit.jsx';
+import firebase from 'firebase';
 
 var initial_fields = {
   firstName: '',
@@ -8,6 +8,7 @@ var initial_fields = {
   email: '',
   year: "2020",
   phoneNumber: '',
+  pictureURL: '',
 }
 
 class AddRushee extends React.Component {
@@ -20,13 +21,7 @@ class AddRushee extends React.Component {
     };
   }
   componentWillMount() {
-    this.firebaseRef = new Firebase(
-      'https://rush-brad.firebaseio.com/rushees'
-    );
-  }
-
-  componentWillUnmount() {
-    this.firebaseRef.off();
+    this.firebaseRef = firebase.database().ref('rushees');
   }
 
   submitForm() {
@@ -36,6 +31,7 @@ class AddRushee extends React.Component {
       email: this.refs.email.value,
       phoneNumber: this.refs.phoneNumber.value,
       year: this.refs.year.value,
+      pictureURL: this.refs.pictureURL.value,
       rating: -1,
     }
     var self = this;
@@ -56,14 +52,14 @@ class AddRushee extends React.Component {
     this.refs.lastName.value = '';
     this.refs.email.value = '';
     this.refs.phoneNumber.value = '';
-    this.refs.year.value = 2020;
+    this.refs.year.value = '2020';
+    this.refs.pictureURL.value = '';
   }
 
   render() {
 
     return (
       <div>
-        <Link to="/todoapp">Click Me!</Link>
         <h2>Add a New Rushee</h2>
         <div className="form-fields">
           <div>
@@ -112,6 +108,15 @@ class AddRushee extends React.Component {
               <option value="2020">2020</option>
               <option value="2019">2019</option>
             </select>
+          </div>
+          <div>
+            <label>Picture URL</label>
+            <input
+              className="form-control"
+              type="text"
+              ref="pictureURL"
+              defaultValue={this.state.fields.pictureURL}
+            />
           </div>
           <div className="form-footer">
             <button

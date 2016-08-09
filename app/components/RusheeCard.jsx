@@ -25,8 +25,11 @@ class RusheeCard extends React.Component {
     var rating = rushee_obj.rating == -1
       ? 'Rushee has not been rated'
       : rushee_obj.rating;
+    var url = rushee_obj.pictureURL == null
+      ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
+      : rushee_obj.pictureURL;
     return (
-      <div className="col-xs-4" key={this.state.rushee.key}>
+      <div className="col-xs-4 card-container" key={this.state.rushee.key}>
         <div className="card text-center">
           <div className="card-block text-center">
             <h4 className="card-title">
@@ -34,11 +37,13 @@ class RusheeCard extends React.Component {
             </h4>
           </div>
           <div className="img-crop">
-            <img
-              className="card-img-top"
-              src="https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
-              alt="Rushee photo"
-            />
+            <Link to={"/detail/" + this.props.rusheeKey}>
+              <img
+                className="card-img-top"
+                src={url}
+                alt="Rushee photo"
+              />
+            </Link>
           </div>
           <ul className="list-group list-group-flush">
             <li className="list-group-item">
