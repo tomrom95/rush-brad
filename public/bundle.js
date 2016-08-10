@@ -24193,11 +24193,11 @@
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _AddRushee = __webpack_require__(214);
+	var _AddRushee = __webpack_require__(217);
 
 	var _AddRushee2 = _interopRequireDefault(_AddRushee);
 
-	var _RusheeDetail = __webpack_require__(215);
+	var _RusheeDetail = __webpack_require__(218);
 
 	var _RusheeDetail2 = _interopRequireDefault(_RusheeDetail);
 
@@ -25046,6 +25046,10 @@
 
 	var _reactRouter = __webpack_require__(159);
 
+	var _AllFratRating = __webpack_require__(214);
+
+	var _AllFratRating2 = _interopRequireDefault(_AllFratRating);
+
 	var _firebase = __webpack_require__(210);
 
 	var _firebase2 = _interopRequireDefault(_firebase);
@@ -25091,11 +25095,10 @@
 	          'error'
 	        );
 	      }
-	      var rating = rushee_obj.rating == -1 ? 'Rushee has not been rated' : rushee_obj.rating;
 	      var url = rushee_obj.pictureURL == null ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'col-xs-4 card-container', key: this.state.rushee.key },
+	        { className: 'col-md-4 card-container', key: this.state.rushee.key },
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'card text-center' },
@@ -25127,12 +25130,7 @@
 	            _react2.default.createElement(
 	              'li',
 	              { className: 'list-group-item' },
-	              _react2.default.createElement(
-	                'strong',
-	                null,
-	                'Rating: '
-	              ),
-	              rating
+	              _react2.default.createElement(_AllFratRating2.default, { rusheeKey: this.props.rusheeKey })
 	            )
 	          )
 	        )
@@ -25147,6 +25145,330 @@
 
 /***/ },
 /* 214 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _StarRatingComponent = __webpack_require__(215);
+
+	var _StarRatingComponent2 = _interopRequireDefault(_StarRatingComponent);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var AllFratRating = function (_React$Component) {
+	  _inherits(AllFratRating, _React$Component);
+
+	  function AllFratRating(props) {
+	    _classCallCheck(this, AllFratRating);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AllFratRating).call(this, props));
+
+	    _this.state = {
+	      ratings: [],
+	      average: 0
+	    };
+	    return _this;
+	  }
+
+	  _createClass(AllFratRating, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.firebaseRef = _firebase2.default.database().ref('rushees/' + this.props.rusheeKey + '/ratings');
+	      this.firebaseRef.on('value', function (dataSnapshot) {
+	        var total_rating = 0;
+	        var all_ratings = [];
+	        var num_ratings = 0;
+	        dataSnapshot.forEach(function (childSnapshot) {
+	          var val = childSnapshot.val();
+	          total_rating += val.rating;
+	          num_ratings++;
+	          if (childSnapshot.key == _firebase2.default.auth().currentUser.uid) {
+	            all_ratings.unshift({
+	              userName: 'You',
+	              rating: val.rating
+	            });
+	          } else {
+	            all_ratings.push({
+	              userName: val.userName,
+	              rating: val.rating
+	            });
+	          }
+	        }.bind(this));
+	        console.log('num_ratings:' + num_ratings);
+	        var avg_rating = num_ratings == 0 ? null : total_rating / num_ratings;
+	        this.setState({
+	          ratings: all_ratings,
+	          average: avg_rating
+	        });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.firebaseRef.off();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var num_ratings = this.state.ratings.length;
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(_StarRatingComponent2.default, {
+	          caption: 'Frat Rating (' + num_ratings + ' votes):',
+	          name: "allFratRating" /* name of the radio input, it is required */
+	          , value: Math.round(this.state.average) /* number of selected icon (`0` - none, `1` - first) */
+	          , starCount: 5 /* number of icons in rating, default `5` */
+	          , editing: false /* is component available for editing, default `true` */
+	        })
+	      );
+	    }
+	  }]);
+
+	  return AllFratRating;
+	}(_react2.default.Component);
+
+	exports.default = AllFratRating;
+
+/***/ },
+/* 215 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _classnames = __webpack_require__(216);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var StarRatingComponent = function (_React$Component) {
+	    _inherits(StarRatingComponent, _React$Component);
+
+	    function StarRatingComponent(props) {
+	        _classCallCheck(this, StarRatingComponent);
+
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(StarRatingComponent).call(this, props));
+
+	        _this.state = {
+	            value: _this.props.value
+	        };
+	        return _this;
+	    }
+
+	    _createClass(StarRatingComponent, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps() {
+	            this.setState({ value: this.props.value });
+	        }
+	    }, {
+	        key: 'onChange',
+	        value: function onChange(value) {
+	            var editing = this.props.editing;
+	            if (!editing) {
+	                return;
+	            }
+	        }
+	    }, {
+	        key: 'onStarClick',
+	        value: function onStarClick(i, value, name) {
+	            var _props = this.props;
+	            var onStarClick = _props.onStarClick;
+	            var editing = _props.editing;
+
+	            if (!editing) {
+	                return;
+	            }
+	            onStarClick && onStarClick(i, value, name);
+	        }
+	    }, {
+	        key: 'renderStars',
+	        value: function renderStars() {
+	            var _props2 = this.props;
+	            var name = _props2.name;
+	            var starCount = _props2.starCount;
+	            var starColor = _props2.starColor;
+	            var editing = _props2.editing;
+	            var renderStarIcon = _props2.renderStarIcon;
+
+	            var value = this.props.value;
+	            var starStyles = {
+	                float: 'right',
+	                cursor: editing ? 'pointer' : 'default'
+	            };
+	            var radioStyles = {
+	                display: 'none',
+	                position: 'absolte',
+	                marginLeft: -9999
+	            };
+
+	            // populate stars
+	            var starNodes = [];
+	            for (var i = starCount; i > 0; i--) {
+	                var id = name + '_' + i;
+	                var starNodeInput = _react2.default.createElement('input', {
+	                    key: 'input_' + id,
+	                    style: radioStyles,
+	                    className: 'dv-star-rating-input',
+	                    type: 'radio',
+	                    name: name,
+	                    id: id,
+	                    value: i,
+	                    checked: value === i,
+	                    onChange: this.onChange.bind(this, i, name)
+	                });
+	                var starNodeLabel = _react2.default.createElement(
+	                    'label',
+	                    {
+	                        key: 'label_' + id,
+	                        style: value >= i ? { float: starStyles.float, cursor: starStyles.cursor, color: starColor } : starStyles,
+	                        className: 'dv-star-rating-star',
+	                        htmlFor: id,
+	                        onClick: this.onStarClick.bind(this, i, value, name)
+	                    },
+	                    value < i ? _react2.default.createElement(
+	                        'i',
+	                        { style: { fontStyle: 'normal' } },
+	                        '★'
+	                    ) : _react2.default.createElement(
+	                        'i',
+	                        { style: { fontStyle: 'normal', color: '#FFD700' } },
+	                        '★'
+	                    )
+	                );
+	                starNodes.push(starNodeInput);
+	                starNodes.push(starNodeLabel);
+	            }
+
+	            return starNodes;
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var _props3 = this.props;
+	            var editing = _props3.editing;
+	            var className = _props3.className;
+
+	            var classes = (0, _classnames2.default)('dv-star-rating', {
+	                'dv-star-rating-non-editable': !editing
+	            }, className);
+
+	            return _react2.default.createElement(
+	                'span',
+	                { style: { display: 'inline-block', position: 'relative', verticalAlign: 'middle' }, className: classes },
+	                _react2.default.createElement(
+	                    'span',
+	                    { className: 'caption' },
+	                    _react2.default.createElement(
+	                        'strong',
+	                        null,
+	                        this.props.caption
+	                    )
+	                ),
+	                this.renderStars()
+	            );
+	        }
+	    }]);
+
+	    return StarRatingComponent;
+	}(_react2.default.Component);
+
+	exports.default = StarRatingComponent;
+
+/***/ },
+/* 216 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2016 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+
+	(function () {
+		'use strict';
+
+		var hasOwn = {}.hasOwnProperty;
+
+		function classNames () {
+			var classes = [];
+
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+
+				var argType = typeof arg;
+
+				if (argType === 'string' || argType === 'number') {
+					classes.push(arg);
+				} else if (Array.isArray(arg)) {
+					classes.push(classNames.apply(null, arg));
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes.push(key);
+						}
+					}
+				}
+			}
+
+			return classes.join(' ');
+		}
+
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	}());
+
+
+/***/ },
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25214,8 +25536,7 @@
 	        email: this.refs.email.value,
 	        phoneNumber: this.refs.phoneNumber.value,
 	        year: this.refs.year.value,
-	        pictureURL: this.refs.pictureURL.value,
-	        rating: -1
+	        pictureURL: this.refs.pictureURL.value
 	      };
 	      var self = this;
 	      this.firebaseRef.push(data, function (error) {
@@ -25406,7 +25727,7 @@
 	exports.default = AddRushee;
 
 /***/ },
-/* 215 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25423,9 +25744,17 @@
 
 	var _reactRouter = __webpack_require__(159);
 
-	var _CommentList = __webpack_require__(216);
+	var _CommentList = __webpack_require__(219);
 
 	var _CommentList2 = _interopRequireDefault(_CommentList);
+
+	var _UserRating = __webpack_require__(221);
+
+	var _UserRating2 = _interopRequireDefault(_UserRating);
+
+	var _AllFratRating = __webpack_require__(214);
+
+	var _AllFratRating2 = _interopRequireDefault(_AllFratRating);
 
 	var _firebase = __webpack_require__(210);
 
@@ -25472,7 +25801,6 @@
 	          'loading'
 	        );
 	      }
-	      var rating = rushee_obj.rating == -1 ? 'Rushee has not been rated' : rushee_obj.rating;
 	      var url = rushee_obj.pictureURL == null ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
 	      return _react2.default.createElement(
 	        'div',
@@ -25491,7 +25819,7 @@
 	          { className: 'row' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-8' },
+	            { className: 'col-xs-8' },
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'detail-img-container' },
@@ -25500,7 +25828,7 @@
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-4' },
+	            { className: 'col-xs-4' },
 	            _react2.default.createElement(
 	              'p',
 	              null,
@@ -25537,14 +25865,18 @@
 	          'div',
 	          { className: 'row' },
 	          _react2.default.createElement(
-	            'p',
-	            null,
+	            'div',
+	            { className: 'col-xs-8' },
 	            _react2.default.createElement(
-	              'strong',
-	              null,
-	              'Rating: '
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(_AllFratRating2.default, { rusheeKey: this.props.params.rusheeKey })
 	            ),
-	            rating
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(_UserRating2.default, { rusheeKey: this.props.params.rusheeKey })
+	            )
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -25562,7 +25894,7 @@
 	exports.default = RusheeCard;
 
 /***/ },
-/* 216 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25579,7 +25911,7 @@
 
 	var _reactRouter = __webpack_require__(159);
 
-	var _Comment = __webpack_require__(217);
+	var _Comment = __webpack_require__(220);
 
 	var _Comment2 = _interopRequireDefault(_Comment);
 
@@ -25604,7 +25936,7 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CommentList).call(this, props));
 
 	    _this.state = {
-	      comments: [],
+	      comments: {},
 	      text: ''
 	    };
 	    return _this;
@@ -25615,7 +25947,7 @@
 	    value: function componentWillMount() {
 	      this.firebaseRef = _firebase2.default.database().ref('comments/' + this.props.rusheeKey);
 	      this.firebaseRef.orderByChild("date").on('value', function (dataSnapshot) {
-	        var comments = [];
+	        var comments = {};
 	        dataSnapshot.forEach(function (childSnapshot) {
 	          var comment = childSnapshot;
 	          comments[childSnapshot.key] = comment;
@@ -25690,7 +26022,7 @@
 	exports.default = CommentList;
 
 /***/ },
-/* 217 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25779,6 +26111,109 @@
 	}(_react2.default.Component);
 
 	exports.default = Comment;
+
+/***/ },
+/* 221 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _StarRatingComponent = __webpack_require__(215);
+
+	var _StarRatingComponent2 = _interopRequireDefault(_StarRatingComponent);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var UserRating = function (_React$Component) {
+	  _inherits(UserRating, _React$Component);
+
+	  function UserRating(props) {
+	    _classCallCheck(this, UserRating);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(UserRating).call(this, props));
+
+	    _this.state = {
+	      user_rating: null
+	    };
+	    return _this;
+	  }
+
+	  _createClass(UserRating, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.firebaseRef = _firebase2.default.database().ref('rushees/' + this.props.rusheeKey + '/ratings');
+	      this.firebaseRef.on('value', function (dataSnapshot) {
+	        dataSnapshot.forEach(function (childSnapshot) {
+	          if (childSnapshot.key == _firebase2.default.auth().currentUser.uid) {
+	            this.setState({ user_rating: childSnapshot.val().rating });
+	          }
+	        }.bind(this));
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.firebaseRef.off();
+	    }
+	  }, {
+	    key: 'handleRating',
+	    value: function handleRating(nextValue, prevValue, name) {
+	      var rating = nextValue;
+	      var user_id = _firebase2.default.auth().currentUser.uid;
+	      var user_ref = _firebase2.default.database().ref('users/' + user_id);
+	      user_ref.once('value', function (snap) {
+	        var user_name = snap.val().displayName;
+	        this.firebaseRef.child(user_id).set({
+	          userName: user_name,
+	          rating: rating
+	        });
+	        this.setState({ user_rating: rating });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(_StarRatingComponent2.default, {
+	          name: "userRusheeRating",
+	          caption: 'Your Rating:',
+	          value: this.state.user_rating,
+	          starCount: 5,
+	          onStarClick: this.handleRating.bind(this),
+	          editing: true
+	        })
+	      );
+	    }
+	  }]);
+
+	  return UserRating;
+	}(_react2.default.Component);
+
+	exports.default = UserRating;
 
 /***/ }
 /******/ ]);

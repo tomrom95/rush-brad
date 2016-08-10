@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import AllFratRating from './AllFratRating.jsx';
 import firebase from 'firebase';
 
 class RusheeCard extends React.Component {
@@ -22,14 +23,11 @@ class RusheeCard extends React.Component {
     if (rushee_obj == null) {
       return (<div>error</div>);
     }
-    var rating = rushee_obj.rating == -1
-      ? 'Rushee has not been rated'
-      : rushee_obj.rating;
     var url = rushee_obj.pictureURL == null
       ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
       : rushee_obj.pictureURL;
     return (
-      <div className="col-xs-4 card-container" key={this.state.rushee.key}>
+      <div className="col-md-4 card-container" key={this.state.rushee.key}>
         <div className="card text-center">
           <div className="card-block text-center">
             <h4 className="card-title">
@@ -47,7 +45,7 @@ class RusheeCard extends React.Component {
           </div>
           <ul className="list-group list-group-flush">
             <li className="list-group-item">
-              <strong>Rating: </strong>{rating}
+              <AllFratRating rusheeKey={this.props.rusheeKey} />
             </li>
           </ul>
         </div>

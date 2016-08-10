@@ -7,7 +7,7 @@ class CommentList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      comments: [],
+      comments: {},
       text: '',
     };
   }
@@ -17,7 +17,7 @@ class CommentList extends React.Component {
       'comments/' + this.props.rusheeKey
     );
     this.firebaseRef.orderByChild("date").on('value', function(dataSnapshot) {
-      var comments = [];
+      var comments = {};
       dataSnapshot.forEach(function(childSnapshot) {
         var comment = childSnapshot;
         comments[childSnapshot.key] = comment;
