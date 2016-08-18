@@ -41,10 +41,16 @@ class Home extends React.Component {
     };
     return (
       <div className="container-fluid">
-        <div className="row">
+        <div className="row header">
           <div className="col-md-6"><h3>Rushees</h3></div>
-          <div className="col-md-6"><span className="pull-right">
-            <Link to="/add-rushee">Add Rushee</Link>
+          <div className="col-md-6"><span className="link-button">
+            <Link to="/add-rushee">
+              <button
+                className="btn btn-primary"
+              >
+                Add Rushee
+              </button>
+            </Link>
           </span></div>
         </div>
         <div className="row">

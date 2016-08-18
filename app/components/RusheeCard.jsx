@@ -23,16 +23,18 @@ class RusheeCard extends React.Component {
     if (rushee_obj == null) {
       return (<div>error</div>);
     }
-    var url = rushee_obj.pictureURL == null
+    var url = rushee_obj.pictureURL == null || rushee_obj.pictureURL.length == 0
       ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
       : rushee_obj.pictureURL;
     return (
       <div className="col-md-4 card-container" key={this.state.rushee.key}>
         <div className="card text-center">
           <div className="card-block text-center">
-            <h4 className="card-title">
-              {rushee_obj.firstName + ' ' + rushee_obj.lastName}
-            </h4>
+            <Link to={"/detail/" + this.props.rusheeKey}>
+              <h4 className="card-title">
+                {rushee_obj.firstName + ' ' + rushee_obj.lastName}
+              </h4>
+            </Link>
           </div>
           <div className="img-crop">
             <Link to={"/detail/" + this.props.rusheeKey}>

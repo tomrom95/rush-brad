@@ -17,6 +17,10 @@
     "rushees": {
       ".read": "auth != null",
       ".write": "auth != null"
+    },
+    "comments": {
+      ".read": "auth != null",
+      ".write": "auth != null"
     }
   }
 }

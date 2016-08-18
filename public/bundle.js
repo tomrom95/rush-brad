@@ -24990,7 +24990,7 @@
 	        { className: 'container-fluid' },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'row' },
+	          { className: 'row header' },
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'col-md-6' },
@@ -25005,11 +25005,17 @@
 	            { className: 'col-md-6' },
 	            _react2.default.createElement(
 	              'span',
-	              { className: 'pull-right' },
+	              { className: 'link-button' },
 	              _react2.default.createElement(
 	                _reactRouter.Link,
 	                { to: '/add-rushee' },
-	                'Add Rushee'
+	                _react2.default.createElement(
+	                  'button',
+	                  {
+	                    className: 'btn btn-primary'
+	                  },
+	                  'Add Rushee'
+	                )
 	              )
 	            )
 	          )
@@ -25095,7 +25101,7 @@
 	          'error'
 	        );
 	      }
-	      var url = rushee_obj.pictureURL == null ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
+	      var url = rushee_obj.pictureURL == null || rushee_obj.pictureURL.length == 0 ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'col-md-4 card-container', key: this.state.rushee.key },
@@ -25106,9 +25112,13 @@
 	            'div',
 	            { className: 'card-block text-center' },
 	            _react2.default.createElement(
-	              'h4',
-	              { className: 'card-title' },
-	              rushee_obj.firstName + ' ' + rushee_obj.lastName
+	              _reactRouter.Link,
+	              { to: "/detail/" + this.props.rusheeKey },
+	              _react2.default.createElement(
+	                'h4',
+	                { className: 'card-title' },
+	                rushee_obj.firstName + ' ' + rushee_obj.lastName
+	              )
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -25392,18 +25402,30 @@
 	            }, className);
 
 	            return _react2.default.createElement(
-	                'span',
-	                { style: { display: 'inline-block', position: 'relative', verticalAlign: 'middle' }, className: classes },
+	                'div',
+	                null,
 	                _react2.default.createElement(
-	                    'span',
-	                    { className: 'caption' },
+	                    'div',
+	                    { className: 'row' },
 	                    _react2.default.createElement(
-	                        'strong',
-	                        null,
-	                        this.props.caption
+	                        'span',
+	                        { className: 'caption' },
+	                        _react2.default.createElement(
+	                            'strong',
+	                            null,
+	                            this.props.caption
+	                        )
 	                    )
 	                ),
-	                this.renderStars()
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'row' },
+	                    _react2.default.createElement(
+	                        'span',
+	                        { style: { display: 'inline-block', position: 'relative', verticalAlign: 'middle' }, className: classes },
+	                        this.renderStars()
+	                    )
+	                )
 	            );
 	        }
 	    }]);
@@ -25562,11 +25584,38 @@
 
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'form-wrapper' },
 	        _react2.default.createElement(
-	          'h2',
-	          null,
-	          'Add a New Rushee'
+	          'div',
+	          { className: 'row' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-md-6' },
+	            _react2.default.createElement(
+	              'h4',
+	              null,
+	              'Add a Rushee'
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-md-6' },
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'link-button' },
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: '/' },
+	                _react2.default.createElement(
+	                  'button',
+	                  {
+	                    className: 'btn btn-primary'
+	                  },
+	                  'Home'
+	                )
+	              )
+	            )
+	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -25768,27 +25817,240 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var RusheeCard = function (_React$Component) {
-	  _inherits(RusheeCard, _React$Component);
+	var initial_fields = {
+	  email: '',
+	  year: "2020",
+	  phoneNumber: '',
+	  pictureURL: ''
+	};
 
-	  function RusheeCard(props) {
-	    _classCallCheck(this, RusheeCard);
+	var RusheeDetail = function (_React$Component) {
+	  _inherits(RusheeDetail, _React$Component);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RusheeCard).call(this, props));
+	  function RusheeDetail(props) {
+	    _classCallCheck(this, RusheeDetail);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RusheeDetail).call(this, props));
 
 	    _this.state = {
-	      rushee: null
+	      rushee: null,
+	      editing: false,
+	      fields: initial_fields,
+	      success: null
 	    };
 	    return _this;
 	  }
 
-	  _createClass(RusheeCard, [{
+	  _createClass(RusheeDetail, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      var ref = _firebase2.default.database().ref('rushees/' + this.props.params.rusheeKey);
-	      ref.once('value', function (snap) {
-	        this.setState({ rushee: snap.val() });
+	      this.firebaseRef = _firebase2.default.database().ref('rushees/' + this.props.params.rusheeKey);
+	      console.log('setting');
+	      this.setRushee();
+	    }
+	  }, {
+	    key: 'setRushee',
+	    value: function setRushee() {
+	      console.log('in set rushee');
+	      this.firebaseRef.once('value', function (snap) {
+	        console.log('got val');
+	        var rushee = snap.val();
+	        this.setState({
+	          rushee: rushee,
+	          fields: {
+	            email: rushee.email,
+	            year: rushee.year,
+	            phoneNumber: rushee.phoneNumber,
+	            pictureURL: rushee.pictureURL
+	          },
+	          editing: false,
+	          error: null
+	        });
+	        console.log('set');
 	      }.bind(this));
+	    }
+	  }, {
+	    key: 'editRushee',
+	    value: function editRushee() {
+	      var data = {
+	        email: this.refs.email.value,
+	        phoneNumber: this.refs.phoneNumber.value,
+	        year: this.refs.year.value,
+	        pictureURL: this.refs.pictureURL.value
+	      };
+	      var object = this.firebaseRef.update(data, function (error) {
+	        if (error) {
+	          this.setState({ error: 'Error processing form input' });
+	        } else {
+	          this.setRushee();
+	        }
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'renderEditing',
+	    value: function renderEditing() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'form-fields' },
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            'Email'
+	          ),
+	          _react2.default.createElement('input', {
+	            className: 'form-control',
+	            type: 'email',
+	            ref: 'email',
+	            defaultValue: this.state.fields.email
+	          })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            'Phone Number'
+	          ),
+	          _react2.default.createElement('input', {
+	            className: 'form-control',
+	            type: 'tel',
+	            ref: 'phoneNumber',
+	            defaultValue: this.state.fields.phoneNumber
+	          })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            'Year'
+	          ),
+	          _react2.default.createElement(
+	            'select',
+	            {
+	              className: 'form-control',
+	              ref: 'year',
+	              defaultValue: this.state.fields.year
+	            },
+	            _react2.default.createElement(
+	              'option',
+	              { value: '2020' },
+	              '2020'
+	            ),
+	            _react2.default.createElement(
+	              'option',
+	              { value: '2019' },
+	              '2019'
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            'Picture URL'
+	          ),
+	          _react2.default.createElement('input', {
+	            className: 'form-control',
+	            type: 'text',
+	            ref: 'pictureURL',
+	            defaultValue: this.state.fields.pictureURL
+	          })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'form-footer' },
+	          _react2.default.createElement(
+	            'button',
+	            {
+	              className: 'btn btn-primary pull-right',
+	              onClick: this.editRushee.bind(this)
+	            },
+	            'Submit'
+	          )
+	        ),
+	        _react2.default.createElement('div', { className: 'clearfix' }),
+	        this.state.error ? _react2.default.createElement(
+	          'div',
+	          { className: 'pull-right' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'alert alert-danger' },
+	            _react2.default.createElement(
+	              'strong',
+	              null,
+	              'Error:'
+	            ),
+	            ' ',
+	            this.state.error
+	          )
+	        ) : null
+	      );
+	    }
+	  }, {
+	    key: 'setEditMode',
+	    value: function setEditMode() {
+	      this.setState({
+	        editing: true
+	      });
+	    }
+	  }, {
+	    key: 'renderNormal',
+	    value: function renderNormal() {
+	      var rushee_obj = this.state.rushee;
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'Email: '
+	          ),
+	          rushee_obj.email
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'Year: '
+	          ),
+	          rushee_obj.year
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'Phone Number: '
+	          ),
+	          rushee_obj.phoneNumber
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'button',
+	            {
+	              className: 'btn btn-primary pull-right',
+	              onClick: this.setEditMode.bind(this)
+	            },
+	            'Edit'
+	          )
+	        )
+	      );
 	    }
 	  }, {
 	    key: 'render',
@@ -25801,17 +26063,41 @@
 	          'loading'
 	        );
 	      }
-	      var url = rushee_obj.pictureURL == null ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
+
+	      var url = rushee_obj.pictureURL == null || rushee_obj.pictureURL.length == 0 ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container-fluid' },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'row' },
+	          { className: 'row header' },
 	          _react2.default.createElement(
-	            'h3',
-	            null,
-	            rushee_obj.firstName + ' ' + rushee_obj.lastName
+	            'div',
+	            { className: 'col-md-6' },
+	            _react2.default.createElement(
+	              'h3',
+	              null,
+	              rushee_obj.firstName + ' ' + rushee_obj.lastName
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-md-6' },
+	            _react2.default.createElement(
+	              'span',
+	              { className: 'link-button' },
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: '/' },
+	                _react2.default.createElement(
+	                  'button',
+	                  {
+	                    className: 'btn btn-primary'
+	                  },
+	                  'Home'
+	                )
+	              )
+	            )
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -25829,36 +26115,7 @@
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'col-xs-4' },
-	            _react2.default.createElement(
-	              'p',
-	              null,
-	              _react2.default.createElement(
-	                'strong',
-	                null,
-	                'Email: '
-	              ),
-	              rushee_obj.email
-	            ),
-	            _react2.default.createElement(
-	              'p',
-	              null,
-	              _react2.default.createElement(
-	                'strong',
-	                null,
-	                'Year: '
-	              ),
-	              rushee_obj.year
-	            ),
-	            _react2.default.createElement(
-	              'p',
-	              null,
-	              _react2.default.createElement(
-	                'strong',
-	                null,
-	                'Phone Number: '
-	              ),
-	              rushee_obj.phoneNumber
-	            )
+	            this.state.editing ? this.renderEditing() : this.renderNormal()
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -25888,10 +26145,10 @@
 	    }
 	  }]);
 
-	  return RusheeCard;
+	  return RusheeDetail;
 	}(_react2.default.Component);
 
-	exports.default = RusheeCard;
+	exports.default = RusheeDetail;
 
 /***/ },
 /* 219 */

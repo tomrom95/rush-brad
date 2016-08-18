@@ -87,10 +87,16 @@ class StarRatingComponent extends React.Component {
         }, className);
 
         return (
-            <span style={{display: 'inline-block', position: 'relative', verticalAlign: 'middle'}} className={classes}>
+            <div>
+              <div className="row">
                 <span className="caption"><strong>{this.props.caption}</strong></span>
-                {this.renderStars()}
-            </span>
+              </div>
+              <div className="row">
+                <span style={{display: 'inline-block', position: 'relative', verticalAlign: 'middle'}} className={classes}>
+                    {this.renderStars()}
+                </span>
+              </div>
+            </div>
         );
     }
 }

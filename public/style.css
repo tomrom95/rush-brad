@@ -2,6 +2,28 @@
   margin-left: 0px;
   margin-right: 0px;
 }
+
+.link-button {
+  float: right;
+}
+
+.header {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.form-wrapper {
+  padding: 10px 10px 10px 10px;
+}
+
+a {
+  color: black;
+}
+
+a:hover {
+  color: black;
+}
+
 .caption {
   display: inline-block;
   vertical-align: middle;
