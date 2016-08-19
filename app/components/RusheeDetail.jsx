@@ -166,10 +166,10 @@ class RusheeDetail extends React.Component {
     return (
       <div className="container-fluid">
         <div className="row header">
-          <div className="col-md-6"><h3>
+          <div className="col-xs-6"><h3>
             {rushee_obj.firstName + ' ' + rushee_obj.lastName}
           </h3></div>
-          <div className="col-md-6"><span className="link-button">
+        <div className="col-xs-6"><span className="link-button">
             <Link to="/">
               <button
                 className="btn btn-primary"
@@ -180,12 +180,12 @@ class RusheeDetail extends React.Component {
           </span></div>
         </div>
         <div className="row">
-          <div className="col-xs-8">
+          <div className="col-md-8">
             <div className="detail-img-container">
               <img className="detail-img" src={url} alt="Rushee photo"/>
             </div>
           </div>
-          <div className="col-xs-4">
+          <div className="col-md-4">
             {this.state.editing ? this.renderEditing() : this.renderNormal()}
           </div>
         </div>

@@ -60,8 +60,8 @@ class AddRushee extends React.Component {
     return (
       <div className="form-wrapper">
         <div className="row">
-          <div className="col-md-6"><h4>Add a Rushee</h4></div>
-          <div className="col-md-6"><span className="link-button">
+          <div className="col-xs-6"><h4>Add a Rushee</h4></div>
+          <div className="col-xs-6"><span className="link-button">
             <Link to="/">
               <button
                 className="btn btn-primary"

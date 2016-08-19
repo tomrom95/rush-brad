@@ -24941,6 +24941,33 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var orderings = {
+	  'First Name A-Z': {
+	    key: 'firstName',
+	    order: 1
+	  },
+	  'First Name Z-A': {
+	    key: 'firstName',
+	    order: -1
+	  },
+	  'Last Name A-Z': {
+	    key: 'lastName',
+	    order: 1
+	  },
+	  'Last Name Z-A': {
+	    key: 'lastName',
+	    order: -1
+	  },
+	  'Rating Low-High': {
+	    key: 'averageRating',
+	    order: 1
+	  },
+	  'Rating High-Low': {
+	    key: 'averageRating',
+	    order: -1
+	  }
+	};
+
 	var Home = function (_React$Component) {
 	  _inherits(Home, _React$Component);
 
@@ -24950,7 +24977,8 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
 
 	    _this.state = {
-	      rushees: []
+	      rushees: [],
+	      sortOrder: 'First Name A-Z'
 	    };
 	    return _this;
 	  }
@@ -24978,13 +25006,50 @@
 	      this.firebaseRef.off();
 	    }
 	  }, {
+	    key: 'getSortOrderFunction',
+	    value: function getSortOrderFunction() {
+	      var key = orderings[this.state.sortOrder].key;
+	      var order = orderings[this.state.sortOrder].order;
+	      return function (a, b) {
+	        if (a[key] == "") {
+	          return 1;
+	        } else if (b[key] == "") {
+	          return -1;
+	        }
+	        if (a[key] < b[key]) {
+	          return -1 * order;
+	        } else if (a[key] > b[key]) {
+	          return 1 * order;
+	        }
+	        return 0;
+	      };
+	    }
+	  }, {
+	    key: 'setSortOrder',
+	    value: function setSortOrder(event) {
+	      this.setState({ sortOrder: event.target.value });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var self = this;
 	      var createRushee = function createRushee(rushee, index) {
-	        console.log('key: = ' + rushee['.key']);
-	        return _react2.default.createElement(_RusheeCard2.default, { key: rushee['.key'], rusheeKey: rushee['.key'] });
+	        var clearFix = index % 3 == 0 ? _react2.default.createElement('div', { className: 'clearfix visible-md' }) : null;
+	        return _react2.default.createElement(
+	          'div',
+	          { key: rushee['.key'] },
+	          clearFix,
+	          _react2.default.createElement(_RusheeCard2.default, { rusheeKey: rushee['.key'] })
+	        );
 	      };
+	      var createSortSelection = function createSortSelection(name, index) {
+	        return _react2.default.createElement(
+	          'option',
+	          { value: name, key: name },
+	          name
+	        );
+	      };
+	      var rusheeList = this.state.rushees.sort(this.getSortOrderFunction());
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container-fluid' },
@@ -24993,7 +25058,7 @@
 	          { className: 'row header' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-6' },
+	            { className: 'col-xs-6' },
 	            _react2.default.createElement(
 	              'h3',
 	              null,
@@ -25002,7 +25067,7 @@
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-6' },
+	            { className: 'col-xs-6' },
 	            _react2.default.createElement(
 	              'span',
 	              { className: 'link-button' },
@@ -25022,8 +25087,35 @@
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'row' },
-	          this.state.rushees.map(createRushee)
+	          { className: 'row header' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-md-4' },
+	            _react2.default.createElement(
+	              'label',
+	              null,
+	              'Sort by: '
+	            ),
+	            _react2.default.createElement(
+	              'select',
+	              {
+	                className: 'form-control filter',
+	                ref: 'year',
+	                defaultValue: this.state.sortOrder,
+	                onChange: this.setSortOrder.bind(this)
+	              },
+	              Object.keys(orderings).map(createSortSelection)
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'card-deck-wrapper' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'card-deck' },
+	            rusheeList.map(createRushee)
+	          )
 	        )
 	      );
 	    }
@@ -25590,7 +25682,7 @@
 	          { className: 'row' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-6' },
+	            { className: 'col-xs-6' },
 	            _react2.default.createElement(
 	              'h4',
 	              null,
@@ -25599,7 +25691,7 @@
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-6' },
+	            { className: 'col-xs-6' },
 	            _react2.default.createElement(
 	              'span',
 	              { className: 'link-button' },
@@ -26073,7 +26165,7 @@
 	          { className: 'row header' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-6' },
+	            { className: 'col-xs-6' },
 	            _react2.default.createElement(
 	              'h3',
 	              null,
@@ -26082,7 +26174,7 @@
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-6' },
+	            { className: 'col-xs-6' },
 	            _react2.default.createElement(
 	              'span',
 	              { className: 'link-button' },
@@ -26105,7 +26197,7 @@
 	          { className: 'row' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-xs-8' },
+	            { className: 'col-md-8' },
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'detail-img-container' },
@@ -26114,7 +26206,7 @@
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-xs-4' },
+	            { className: 'col-md-4' },
 	            this.state.editing ? this.renderEditing() : this.renderNormal()
 	          )
 	        ),
@@ -26260,11 +26352,23 @@
 	            _react2.default.createElement(
 	              'form',
 	              { onSubmit: this.handleSubmit.bind(this) },
-	              _react2.default.createElement('input', { onChange: this.handleChange.bind(this), value: this.state.text }),
 	              _react2.default.createElement(
-	                'button',
-	                { className: 'btn btn-primary' },
-	                'Add Comment'
+	                'div',
+	                { className: 'row' },
+	                _react2.default.createElement('input', {
+	                  className: 'comment-input',
+	                  onChange: this.handleChange.bind(this),
+	                  value: this.state.text
+	                })
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'row button-padding' },
+	                _react2.default.createElement(
+	                  'button',
+	                  { className: 'btn btn-primary' },
+	                  'Add Comment'
+	                )
 	              )
 	            )
 	          )
@@ -26441,12 +26545,23 @@
 	      var user_id = _firebase2.default.auth().currentUser.uid;
 	      var user_ref = _firebase2.default.database().ref('users/' + user_id);
 	      user_ref.once('value', function (snap) {
+	        this.setState({ user_rating: rating });
 	        var user_name = snap.val().displayName;
 	        this.firebaseRef.child(user_id).set({
 	          userName: user_name,
 	          rating: rating
 	        });
-	        this.setState({ user_rating: rating });
+
+	        this.firebaseRef.on('value', function (dataSnapshot) {
+	          var total_rating = 0.0;
+	          var num_ratings = 0.0;
+	          dataSnapshot.forEach(function (childSnapshot) {
+	            total_rating += childSnapshot.val().rating;
+	            num_ratings++;
+	          }.bind(this));
+	          var avg_rating = num_ratings == 0 ? null : total_rating / num_ratings;
+	          _firebase2.default.database().ref('rushees/' + this.props.rusheeKey).update({ averageRating: avg_rating });
+	        }.bind(this));
 	      }.bind(this));
 	    }
 	  }, {

@@ -64,8 +64,16 @@ class CommentList extends React.Component {
           { comment_comps }
           <li className="list-group-item">
             <form onSubmit={ this.handleSubmit.bind(this) }>
-              <input onChange={ this.handleChange.bind(this) } value={ this.state.text } />
-              <button className="btn btn-primary">{'Add Comment'}</button>
+              <div className="row">
+                <input
+                  className="comment-input"
+                  onChange={ this.handleChange.bind(this) }
+                  value={ this.state.text }
+                />
+              </div>
+              <div className="row button-padding">
+                <button className="btn btn-primary">{'Add Comment'}</button>
+              </div>
             </form>
           </li>
         </ul>

@@ -33,12 +33,27 @@ class UserRating extends React.Component {
     var user_id = firebase.auth().currentUser.uid;
     var user_ref = firebase.database().ref('users/' + user_id);
     user_ref.once('value', function(snap) {
+      this.setState({user_rating: rating});
       var user_name = snap.val().displayName;
       this.firebaseRef.child(user_id).set({
         userName: user_name,
         rating: rating
       });
-      this.setState({user_rating: rating});
+
+      this.firebaseRef.on('value', function(dataSnapshot) {
+        var total_rating = 0.0;
+        var num_ratings = 0.0;
+        dataSnapshot.forEach(function(childSnapshot) {
+          total_rating += childSnapshot.val().rating;
+          num_ratings ++;
+        }.bind(this));
+        var avg_rating = num_ratings == 0
+          ? null
+          : total_rating / num_ratings;
+        firebase.database().ref('rushees/' + this.props.rusheeKey)
+          .update({averageRating: avg_rating});
+      }.bind(this));
+
     }.bind(this));
   }
 
