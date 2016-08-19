@@ -51,7 +51,10 @@ class UserRating extends React.Component {
           ? null
           : total_rating / num_ratings;
         firebase.database().ref('rushees/' + this.props.rusheeKey)
-          .update({averageRating: avg_rating});
+          .update({
+            averageRating: avg_rating,
+            numRatings: num_ratings,
+          });
       }.bind(this));
 
     }.bind(this));

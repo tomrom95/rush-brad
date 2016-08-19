@@ -24960,10 +24960,22 @@
 	  },
 	  'Rating Low-High': {
 	    key: 'averageRating',
+	    secondary: 'Number of Ratings Low-High',
 	    order: 1
 	  },
 	  'Rating High-Low': {
 	    key: 'averageRating',
+	    secondary: 'Number of Ratings High-Low',
+	    order: -1
+	  },
+	  'Number of Ratings Low-High': {
+	    key: 'numRatings',
+	    secondary: 'First Name A-Z',
+	    order: -1
+	  },
+	  'Number of Ratings High-Low': {
+	    key: 'numRatings',
+	    secondary: 'First Name A-Z',
 	    order: -1
 	  }
 	};
@@ -25007,9 +25019,10 @@
 	    }
 	  }, {
 	    key: 'getSortOrderFunction',
-	    value: function getSortOrderFunction() {
-	      var key = orderings[this.state.sortOrder].key;
-	      var order = orderings[this.state.sortOrder].order;
+	    value: function getSortOrderFunction(sortOrder) {
+	      var key = orderings[sortOrder].key;
+	      var order = orderings[sortOrder].order;
+	      var secondary = orderings[sortOrder].secondary;
 	      return function (a, b) {
 	        if (a[key] == "") {
 	          return 1;
@@ -25020,6 +25033,8 @@
 	          return -1 * order;
 	        } else if (a[key] > b[key]) {
 	          return 1 * order;
+	        } else if (secondary != null) {
+	          return this.getSortOrderFunction(secondary);
 	        }
 	        return 0;
 	      };
@@ -25049,7 +25064,7 @@
 	          name
 	        );
 	      };
-	      var rusheeList = this.state.rushees.sort(this.getSortOrderFunction());
+	      var rusheeList = this.state.rushees.sort(this.getSortOrderFunction(this.state.sortOrder).bind(this));
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container-fluid' },
@@ -26560,7 +26575,10 @@
 	            num_ratings++;
 	          }.bind(this));
 	          var avg_rating = num_ratings == 0 ? null : total_rating / num_ratings;
-	          _firebase2.default.database().ref('rushees/' + this.props.rusheeKey).update({ averageRating: avg_rating });
+	          _firebase2.default.database().ref('rushees/' + this.props.rusheeKey).update({
+	            averageRating: avg_rating,
+	            numRatings: num_ratings
+	          });
 	        }.bind(this));
 	      }.bind(this));
 	    }
