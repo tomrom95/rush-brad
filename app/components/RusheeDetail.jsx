@@ -25,14 +25,11 @@ class RusheeDetail extends React.Component {
 
   componentWillMount() {
     this.firebaseRef = firebase.database().ref('rushees/' + this.props.params.rusheeKey);
-    console.log('setting');
     this.setRushee();
   }
 
   setRushee() {
-    console.log('in set rushee');
     this.firebaseRef.once('value', function(snap) {
-      console.log('got val');
       var rushee = snap.val();
       this.setState({
         rushee: rushee,
@@ -45,7 +42,6 @@ class RusheeDetail extends React.Component {
         editing: false,
         error: null,
       });
-      console.log('set');
     }.bind(this));
   }
 

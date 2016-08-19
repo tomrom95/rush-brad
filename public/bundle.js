@@ -24277,7 +24277,6 @@
 	      var provider = new _firebase2.default.auth.FacebookAuthProvider();
 	      _firebase2.default.auth().signInWithPopup(provider).then(function (result) {
 	        var user = result.user;
-	        console.log(user);
 	        this.firebaseRef.ref('users/' + user.uid).set({
 	          'displayName': user.displayName
 	        });
@@ -24971,7 +24970,7 @@
 	  'Number of Ratings Low-High': {
 	    key: 'numRatings',
 	    secondary: 'First Name A-Z',
-	    order: -1
+	    order: 1
 	  },
 	  'Number of Ratings High-Low': {
 	    key: 'numRatings',
@@ -25034,7 +25033,8 @@
 	        } else if (a[key] > b[key]) {
 	          return 1 * order;
 	        } else if (secondary != null) {
-	          return this.getSortOrderFunction(secondary);
+	          var secondSort = this.getSortOrderFunction(secondary).bind(this);
+	          return secondSort(a, b);
 	        }
 	        return 0;
 	      };
@@ -25333,7 +25333,6 @@
 	            });
 	          }
 	        }.bind(this));
-	        console.log('num_ratings:' + num_ratings);
 	        var avg_rating = num_ratings == 0 ? null : total_rating / num_ratings;
 	        this.setState({
 	          ratings: all_ratings,
@@ -25665,7 +25664,8 @@
 	        email: this.refs.email.value,
 	        phoneNumber: this.refs.phoneNumber.value,
 	        year: this.refs.year.value,
-	        pictureURL: this.refs.pictureURL.value
+	        pictureURL: this.refs.pictureURL.value,
+	        numRatings: 0
 	      };
 	      var self = this;
 	      this.firebaseRef.push(data, function (error) {
@@ -25952,15 +25952,12 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.firebaseRef = _firebase2.default.database().ref('rushees/' + this.props.params.rusheeKey);
-	      console.log('setting');
 	      this.setRushee();
 	    }
 	  }, {
 	    key: 'setRushee',
 	    value: function setRushee() {
-	      console.log('in set rushee');
 	      this.firebaseRef.once('value', function (snap) {
-	        console.log('got val');
 	        var rushee = snap.val();
 	        this.setState({
 	          rushee: rushee,
@@ -25973,7 +25970,6 @@
 	          editing: false,
 	          error: null
 	        });
-	        console.log('set');
 	      }.bind(this));
 	    }
 	  }, {
@@ -26447,7 +26443,6 @@
 	    value: function componentWillMount() {
 	      var comment_obj = this.props.commentRef.val();
 	      var user_id = comment_obj.author;
-	      console.log('user_id is : ' + user_id);
 	      var user_ref = _firebase2.default.database().ref('users/' + user_id);
 	      user_ref.once('value', function (snap) {
 	        this.setState({

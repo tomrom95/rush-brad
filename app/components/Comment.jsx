@@ -14,7 +14,6 @@ class Comment extends React.Component {
   componentWillMount() {
     var comment_obj = this.props.commentRef.val();
     var user_id = comment_obj.author;
-    console.log('user_id is : ' + user_id);
     var user_ref = firebase.database().ref('users/' + user_id);
     user_ref.once('value', function(snap) {
       this.setState({

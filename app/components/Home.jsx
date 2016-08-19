@@ -33,7 +33,7 @@ var orderings = {
   'Number of Ratings Low-High': {
     key: 'numRatings',
     secondary: 'First Name A-Z',
-    order: -1,
+    order: 1,
   },
   'Number of Ratings High-Low': {
     key: 'numRatings',
@@ -86,7 +86,8 @@ class Home extends React.Component {
       } else if (a[key] > b[key]) {
         return 1 * order;
       } else if (secondary != null) {
-        return this.getSortOrderFunction(secondary);
+        var secondSort = this.getSortOrderFunction(secondary).bind(this);
+        return secondSort(a,b);
       }
       return 0;
     }

@@ -36,7 +36,6 @@ class AllFratRating extends React.Component {
           });
         }
       }.bind(this));
-      console.log('num_ratings:' + num_ratings);
       var avg_rating = num_ratings == 0
         ? null
         : total_rating / num_ratings;

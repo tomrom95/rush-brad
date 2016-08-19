@@ -32,6 +32,7 @@ class AddRushee extends React.Component {
       phoneNumber: this.refs.phoneNumber.value,
       year: this.refs.year.value,
       pictureURL: this.refs.pictureURL.value,
+      numRatings: 0,
     }
     var self = this;
     this.firebaseRef.push(
