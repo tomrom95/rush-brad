@@ -24989,7 +24989,8 @@
 
 	    _this.state = {
 	      rushees: [],
-	      sortOrder: 'First Name A-Z'
+	      sortOrder: 'First Name A-Z',
+	      searchText: ''
 	    };
 	    return _this;
 	  }
@@ -25005,7 +25006,7 @@
 	          rushee['.key'] = childSnapshot.key;
 	          rushees.push(rushee);
 	        }.bind(this));
-
+	        rushees = rushees.sort(this.getSortOrderFunction(this.state.sortOrder).bind(this));
 	        this.setState({
 	          rushees: rushees
 	        });
@@ -25042,7 +25043,17 @@
 	  }, {
 	    key: 'setSortOrder',
 	    value: function setSortOrder(event) {
-	      this.setState({ sortOrder: event.target.value });
+	      var order = event.target.value;
+	      var rushees = this.state.rushees.sort(this.getSortOrderFunction(order).bind(this));
+	      this.setState({
+	        sortOrder: order,
+	        rushees: rushees
+	      });
+	    }
+	  }, {
+	    key: 'handleSearch',
+	    value: function handleSearch(e) {
+	      this.setState({ searchText: e.target.value });
 	    }
 	  }, {
 	    key: 'render',
@@ -25064,7 +25075,11 @@
 	          name
 	        );
 	      };
-	      var rusheeList = this.state.rushees.sort(this.getSortOrderFunction(this.state.sortOrder).bind(this));
+	      var rusheeList = this.state.rushees.filter(function (rushee) {
+	        var name = rushee.firstName + ' ' + rushee.lastName;
+	        return name.toLowerCase().includes(this.state.searchText.toLowerCase());
+	      }.bind(this));
+
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container-fluid' },
@@ -25121,6 +25136,19 @@
 	              },
 	              Object.keys(orderings).map(createSortSelection)
 	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-md-4' },
+	            _react2.default.createElement(
+	              'label',
+	              null,
+	              'Search For: '
+	            ),
+	            _react2.default.createElement('input', {
+	              onChange: this.handleSearch.bind(this),
+	              value: this.state.searchText
+	            })
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -25349,16 +25377,41 @@
 	    key: 'render',
 	    value: function render() {
 	      var num_ratings = this.state.ratings.length;
+	      var createRatingText = function createRatingText(data, index) {
+	        return _react2.default.createElement(
+	          'p',
+	          { key: index },
+	          data.userName,
+	          ': ',
+	          data.rating
+	        );
+	      };
+	      var avg_rating = this.state.average == null ? "No Rating" : "" + this.state.average + " stars";
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'row' },
+	        { className: 'row tooltip' },
 	        _react2.default.createElement(_StarRatingComponent2.default, {
 	          caption: 'Frat Rating (' + num_ratings + ' votes):',
 	          name: "allFratRating" /* name of the radio input, it is required */
 	          , value: Math.round(this.state.average) /* number of selected icon (`0` - none, `1` - first) */
 	          , starCount: 5 /* number of icons in rating, default `5` */
 	          , editing: false /* is component available for editing, default `true` */
-	        })
+	        }),
+	        _react2.default.createElement(
+	          'span',
+	          { className: 'tooltiptext' },
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'strong',
+	              null,
+	              'Average: ',
+	              avg_rating
+	            )
+	          ),
+	          this.state.ratings.map(createRatingText)
+	        )
 	      );
 	    }
 	  }]);
@@ -25667,12 +25720,21 @@
 	        pictureURL: this.refs.pictureURL.value,
 	        numRatings: 0
 	      };
+
+	      if (data.firstName == "" || data.lastName == "") {
+	        this.setState({ error: 'Please fill out the required fields' });
+	        return;
+	      }
+
 	      var self = this;
 	      this.firebaseRef.push(data, function (error) {
 	        if (error) {
 	          self.setState({ error: 'Error processing form input' });
 	        } else {
-	          self.setState({ success: 'Rushee submitted successfully' });
+	          self.setState({
+	            error: null,
+	            success: 'Rushee submitted successfully'
+	          });
 	        }
 	      });
 	      this.setState({
@@ -25733,7 +25795,7 @@
 	            _react2.default.createElement(
 	              'label',
 	              null,
-	              'First Name'
+	              'First Name *'
 	            ),
 	            _react2.default.createElement('input', {
 	              className: 'form-control',
@@ -25748,7 +25810,7 @@
 	            _react2.default.createElement(
 	              'label',
 	              null,
-	              'Last Name'
+	              'Last Name *'
 	            ),
 	            _react2.default.createElement('input', {
 	              className: 'form-control',

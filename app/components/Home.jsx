@@ -48,6 +48,7 @@ class Home extends React.Component {
     this.state = {
       rushees: [],
       sortOrder: 'First Name A-Z',
+      searchText: '',
     };
   }
 
@@ -60,7 +61,9 @@ class Home extends React.Component {
         rushee['.key'] = childSnapshot.key;
         rushees.push(rushee);
       }.bind(this));
-
+      rushees = rushees.sort(
+        this.getSortOrderFunction(this.state.sortOrder).bind(this)
+      );
       this.setState({
         rushees: rushees
       });
@@ -94,7 +97,18 @@ class Home extends React.Component {
   }
 
   setSortOrder(event) {
-    this.setState({sortOrder: event.target.value});
+    var order = event.target.value;
+    var rushees = this.state.rushees.sort(
+      this.getSortOrderFunction(order).bind(this)
+    );
+    this.setState({
+      sortOrder: order,
+      rushees: rushees,
+    });
+  }
+
+  handleSearch(e) {
+    this.setState({searchText: e.target.value});
   }
 
   render() {
@@ -115,9 +129,11 @@ class Home extends React.Component {
         <option value={name} key={name}>{name}</option>
       );
     }
-    var rusheeList = this.state.rushees.sort(
-      this.getSortOrderFunction(this.state.sortOrder).bind(this)
-    );
+    var rusheeList = this.state.rushees.filter(function(rushee) {
+      var name = rushee.firstName + ' ' + rushee.lastName;
+      return name.toLowerCase().includes(this.state.searchText.toLowerCase());
+    }.bind(this));
+
     return (
       <div className="container-fluid">
         <div className="row header">
@@ -143,6 +159,13 @@ class Home extends React.Component {
             >
               { Object.keys(orderings).map(createSortSelection) }
             </select>
+          </div>
+          <div className="col-md-4">
+            <label>Search For:&nbsp;</label>
+            <input
+              onChange={ this.handleSearch.bind(this) }
+              value={ this.state.searchText }
+            />
           </div>
         </div>
         <div className="card-deck-wrapper">

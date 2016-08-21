@@ -52,8 +52,15 @@ class AllFratRating extends React.Component {
 
   render() {
     var num_ratings = this.state.ratings.length;
+    var createRatingText = function(data, index) {
+      return (
+        <p key={index}>{data.userName}: {data.rating}</p>
+      );
+    }
+    var avg_rating = this.state.average == null
+      ? "No Rating" : "" + this.state.average + " stars";
     return (
-      <div className="row">
+      <div className="row tooltip">
           <StarRatingComponent
             caption={'Frat Rating (' + num_ratings + ' votes):'}
             name={"allFratRating"} /* name of the radio input, it is required */
@@ -61,6 +68,10 @@ class AllFratRating extends React.Component {
             starCount={5} /* number of icons in rating, default `5` */
             editing={false} /* is component available for editing, default `true` */
           />
+        <span className="tooltiptext">
+          <p><strong>Average: {avg_rating}</strong></p>
+          { this.state.ratings.map(createRatingText) }
+        </span>
       </div>
     );
   }

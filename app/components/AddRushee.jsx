@@ -33,7 +33,13 @@ class AddRushee extends React.Component {
       year: this.refs.year.value,
       pictureURL: this.refs.pictureURL.value,
       numRatings: 0,
+    };
+
+    if (data.firstName == "" || data.lastName == "") {
+      this.setState({error: 'Please fill out the required fields'});
+      return;
     }
+
     var self = this;
     this.firebaseRef.push(
       data,
@@ -41,7 +47,10 @@ class AddRushee extends React.Component {
         if (error) {
           self.setState({error: 'Error processing form input'});
         } else {
-          self.setState({success: 'Rushee submitted successfully'});
+          self.setState({
+            error: null,
+            success: 'Rushee submitted successfully'
+          });
         }
       }
     );
@@ -74,7 +83,7 @@ class AddRushee extends React.Component {
         </div>
         <div className="form-fields">
           <div>
-            <label>First Name</label>
+            <label>First Name *</label>
             <input
               className="form-control"
               type="text"
@@ -83,7 +92,7 @@ class AddRushee extends React.Component {
             />
           </div>
           <div>
-            <label>Last Name</label>
+            <label>Last Name *</label>
             <input
               className="form-control"
               type="text"
