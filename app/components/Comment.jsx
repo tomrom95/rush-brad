@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import firebase from 'firebase';
+import CommentVoter from './CommentVoter.jsx';
 
 class Comment extends React.Component {
   constructor(props) {
@@ -29,8 +30,15 @@ class Comment extends React.Component {
     }
     return (
       <li className="list-group-item">
-        <h5 className="list-group-item-heading">{this.state.user_name}</h5>
-        <p className="list-group-item-text">{this.state.comment_text}</p>
+        <div className="row">
+          <div className="col-xs-10">
+            <h5 className="list-group-item-heading">{this.state.user_name}</h5>
+            <p className="list-group-item-text">{this.state.comment_text}</p>
+          </div>
+          <div className="col-xs-2 voter">
+            <CommentVoter commentRef={this.props.commentRef} />
+          </div>
+        </div>
       </li>
     );
   }

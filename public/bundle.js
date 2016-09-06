@@ -25966,7 +25966,7 @@
 
 	var _CommentList2 = _interopRequireDefault(_CommentList);
 
-	var _UserRating = __webpack_require__(221);
+	var _UserRating = __webpack_require__(222);
 
 	var _UserRating2 = _interopRequireDefault(_UserRating);
 
@@ -26477,6 +26477,10 @@
 
 	var _firebase2 = _interopRequireDefault(_firebase);
 
+	var _CommentVoter = __webpack_require__(221);
+
+	var _CommentVoter2 = _interopRequireDefault(_CommentVoter);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26527,14 +26531,27 @@
 	        'li',
 	        { className: 'list-group-item' },
 	        _react2.default.createElement(
-	          'h5',
-	          { className: 'list-group-item-heading' },
-	          this.state.user_name
-	        ),
-	        _react2.default.createElement(
-	          'p',
-	          { className: 'list-group-item-text' },
-	          this.state.comment_text
+	          'div',
+	          { className: 'row' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-xs-10' },
+	            _react2.default.createElement(
+	              'h5',
+	              { className: 'list-group-item-heading' },
+	              this.state.user_name
+	            ),
+	            _react2.default.createElement(
+	              'p',
+	              { className: 'list-group-item-text' },
+	              this.state.comment_text
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-xs-2 voter' },
+	            _react2.default.createElement(_CommentVoter2.default, { commentRef: this.props.commentRef })
+	          )
 	        )
 	      );
 	    }
@@ -26547,6 +26564,135 @@
 
 /***/ },
 /* 221 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var votedStyle = { color: 'blue', cursor: 'auto' };
+	var notVotedStyle = { color: 'black', cursor: 'pointer' };
+
+	var CommentVoter = function (_React$Component) {
+	  _inherits(CommentVoter, _React$Component);
+
+	  function CommentVoter(props) {
+	    _classCallCheck(this, CommentVoter);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CommentVoter).call(this, props));
+
+	    _this.state = {
+	      score: 0,
+	      ratings: [],
+	      userVote: 0
+	    };
+	    return _this;
+	  }
+
+	  _createClass(CommentVoter, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.firebaseRef = this.props.commentRef.ref.child('ratings');
+
+	      this.firebaseRef.on('value', function (dataSnapshot) {
+	        var ratings = [];
+	        var netRating = 0;
+	        var userVote = 0;
+	        dataSnapshot.forEach(function (childSnapshot) {
+	          var val = childSnapshot.val();
+	          if (childSnapshot.key == _firebase2.default.auth().currentUser.uid) {
+	            userVote = childSnapshot.val().score;
+	          }
+	          ratings.push(val);
+	          netRating += val.score;
+	        }.bind(this));
+	        this.setState({
+	          ratings: ratings,
+	          score: netRating,
+	          userVote: userVote
+	        });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'onVote',
+	    value: function onVote(vote) {
+	      if (vote == this.state.userVote) {
+	        return;
+	      }
+	      var user_id = _firebase2.default.auth().currentUser.uid;
+	      var user_ref = _firebase2.default.database().ref('users/' + user_id);
+	      var voteRef = this.firebaseRef.child(user_id);
+	      user_ref.once('value', function (snap) {
+	        var user_name = snap.val().displayName;
+	        voteRef.set({
+	          userName: user_name,
+	          score: vote
+	        });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var downStyle = notVotedStyle;
+	      var upStyle = notVotedStyle;
+	      if (this.state.userVote == -1) {
+	        downStyle = votedStyle;
+	      } else if (this.state.userVote == 1) {
+	        upStyle = votedStyle;
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement('span', {
+	          className: 'glyphicon glyphicon-thumbs-down',
+	          style: downStyle,
+	          'aria-hidden': 'true',
+	          onClick: this.onVote.bind(this, -1)
+	        }),
+	        _react2.default.createElement(
+	          'strong',
+	          null,
+	          this.state.score
+	        ),
+	        _react2.default.createElement('span', {
+	          className: 'glyphicon glyphicon-thumbs-up',
+	          style: upStyle,
+	          'aria-hidden': 'true',
+	          onClick: this.onVote.bind(this, 1)
+	        })
+	      );
+	    }
+	  }]);
+
+	  return CommentVoter;
+	}(_react2.default.Component);
+
+	exports.default = CommentVoter;
+
+/***/ },
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
