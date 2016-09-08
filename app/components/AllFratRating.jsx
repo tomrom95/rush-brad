@@ -58,7 +58,7 @@ class AllFratRating extends React.Component {
       );
     }
     var avg_rating = this.state.average == null
-      ? "No Rating" : "" + this.state.average + " stars";
+      ? "No Rating" : "" + (Math.round(this.state.average * 100) / 100) + " stars";
     return (
       <div className="row tooltip">
           <StarRatingComponent

@@ -2,20 +2,18 @@ import React from 'react';
 import { Link } from 'react-router';
 import firebase from 'firebase';
 import CommentVoter from './CommentVoter.jsx';
-import ReplyList from './ReplyList.jsx';
 
-class Comment extends React.Component {
+class Reply extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user_name: null,
-      comment_text: null,
-      showReplies: false
+      comment_text: null
     };
   }
 
   componentWillMount() {
-    var comment_obj = this.props.commentRef.val();
+    var comment_obj = this.props.replyRef.val();
     var user_id = comment_obj.author;
     var user_ref = firebase.database().ref('users/' + user_id);
     user_ref.once('value', function(snap) {
@@ -26,16 +24,10 @@ class Comment extends React.Component {
     }.bind(this));
   }
 
-  toggleReplies() {
-    this.setState({showReplies: !this.state.showReplies});
-  }
-
   render() {
     if (this.state.user_name == null || this.state.comment_text == null) {
       return (<div>loading</div>);
     }
-    var buttonText = this.state.showReplies
-      ? "Hide replies" : "Reply";
     return (
       <li className="list-group-item">
         <div className="row">
@@ -44,23 +36,8 @@ class Comment extends React.Component {
         </div>
         <div className="row">
             <div className="col-xs-2">
-              <CommentVoter commentRef={this.props.commentRef} />
+              <CommentVoter commentRef={this.props.replyRef} />
             </div>
-            <div className="col-xs-2">
-              <span
-                className="fake-link"
-                onClick={this.toggleReplies.bind(this)}
-              >
-                {buttonText}
-              </span>
-            </div>
-        </div>
-        <div className="row">
-          <ReplyList
-            commentRef={this.props.commentRef}
-            collapse={!this.state.showReplies}
-            onToggle={this.toggleReplies.bind(this)}
-          />
         </div>
       </li>
     );
@@ -68,4 +45,4 @@ class Comment extends React.Component {
 
 }
 
-export default Comment;
+export default Reply;
