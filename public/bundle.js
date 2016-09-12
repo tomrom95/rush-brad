@@ -24987,10 +24987,14 @@
 
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Home).call(this, props));
 
+	    var order = localStorage.getItem('sortOrder') || 'First Name A-Z';
+	    var search = localStorage.getItem('searchText') || '';
+	    var rusheeList = JSON.parse(localStorage.getItem('rusheeList') || '{}');
+	    console.log(rusheeList);
 	    _this.state = {
-	      rushees: [],
-	      sortOrder: 'First Name A-Z',
-	      searchText: ''
+	      rushees: rusheeList,
+	      sortOrder: order,
+	      searchText: search
 	    };
 	    return _this;
 	  }
@@ -25007,6 +25011,7 @@
 	          rushees.push(rushee);
 	        }.bind(this));
 	        rushees = rushees.sort(this.getSortOrderFunction(this.state.sortOrder).bind(this));
+	        localStorage.setItem('rusheeList', JSON.stringify(rushees));
 	        this.setState({
 	          rushees: rushees
 	        });
@@ -25045,6 +25050,7 @@
 	    value: function setSortOrder(event) {
 	      var order = event.target.value;
 	      var rushees = this.state.rushees.sort(this.getSortOrderFunction(order).bind(this));
+	      localStorage.setItem('sortOrder', order);
 	      this.setState({
 	        sortOrder: order,
 	        rushees: rushees
@@ -25053,6 +25059,7 @@
 	  }, {
 	    key: 'handleSearch',
 	    value: function handleSearch(e) {
+	      localStorage.setItem('searchText', e.target.value);
 	      this.setState({ searchText: e.target.value });
 	    }
 	  }, {
@@ -25230,11 +25237,7 @@
 	    value: function render() {
 	      var rushee_obj = this.state.rushee;
 	      if (rushee_obj == null) {
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          'error'
-	        );
+	        return _react2.default.createElement('div', null);
 	      }
 	      var url = rushee_obj.pictureURL == null || rushee_obj.pictureURL.length == 0 ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
 	      return _react2.default.createElement(
@@ -26560,12 +26563,8 @@
 	          { className: 'row' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-xs-2' },
-	            _react2.default.createElement(_CommentVoter2.default, { commentRef: this.props.commentRef })
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-xs-2' },
+	            { className: 'col-xs-12' },
+	            _react2.default.createElement(_CommentVoter2.default, { commentRef: this.props.commentRef }),
 	            _react2.default.createElement(
 	              'span',
 	              {
@@ -26695,7 +26694,7 @@
 	        upStyle = votedStyle;
 	      }
 	      return _react2.default.createElement(
-	        'div',
+	        'span',
 	        { className: 'voter' },
 	        _react2.default.createElement('span', {
 	          className: 'glyphicon glyphicon-thumbs-down',

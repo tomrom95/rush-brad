@@ -45,10 +45,12 @@ var orderings = {
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    var order = localStorage.getItem('sortOrder') || 'First Name A-Z';
+    var search = localStorage.getItem('searchText') || '';
     this.state = {
       rushees: [],
-      sortOrder: 'First Name A-Z',
-      searchText: '',
+      sortOrder: order,
+      searchText: search,
     };
   }
 
@@ -101,6 +103,7 @@ class Home extends React.Component {
     var rushees = this.state.rushees.sort(
       this.getSortOrderFunction(order).bind(this)
     );
+    localStorage.setItem('sortOrder', order);
     this.setState({
       sortOrder: order,
       rushees: rushees,
@@ -108,6 +111,7 @@ class Home extends React.Component {
   }
 
   handleSearch(e) {
+    localStorage.setItem('searchText', e.target.value);
     this.setState({searchText: e.target.value});
   }
 

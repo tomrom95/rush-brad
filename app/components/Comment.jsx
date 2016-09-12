@@ -43,10 +43,8 @@ class Comment extends React.Component {
             <p className="list-group-item-text">{this.state.comment_text}</p>
         </div>
         <div className="row">
-            <div className="col-xs-2">
+            <div className="col-xs-12">
               <CommentVoter commentRef={this.props.commentRef} />
-            </div>
-            <div className="col-xs-2">
               <span
                 className="fake-link"
                 onClick={this.toggleReplies.bind(this)}

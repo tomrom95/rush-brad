@@ -63,7 +63,7 @@ class CommentVoter extends React.Component {
       upStyle = votedStyle;
     }
     return (
-      <div className="voter">
+      <span className="voter">
         <span
           className="glyphicon glyphicon-thumbs-down"
           style={downStyle}
@@ -77,7 +77,7 @@ class CommentVoter extends React.Component {
           aria-hidden="true"
           onClick={this.onVote.bind(this, 1)}
         ></span>
-      </div>
+      </span>
     );
   }
 
