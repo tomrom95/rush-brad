@@ -20,15 +20,32 @@ class RusheeDetail extends React.Component {
       editing: false,
       fields: initial_fields,
       success: null,
+      globalRushees: [],
+      key: null
     };
   }
 
-  componentWillMount() {
-    this.firebaseRef = firebase.database().ref('rushees/' + this.props.params.rusheeKey);
-    this.setRushee();
+  componentWillReceiveProps(nextProps) {
+    console.log("got props");
+    var i = nextProps.params.rusheeIndex;
+    var key = this.state.globalRushees[i];
+    this.setRushee(key);
   }
 
-  setRushee() {
+  componentWillMount() {
+    console.log("mounting");
+    var globalRushees = JSON.parse(localStorage.getItem("globalRusheeList"));
+    this.setState({
+      globalRushees: globalRushees
+    })
+    var i = this.props.params.rusheeIndex;
+    var key = globalRushees[i];
+    this.setRushee(key);
+  }
+
+  setRushee(key) {
+    this.firebaseRef = firebase.database().ref('rushees/' + key);
+    this.setState({key: key})
     this.firebaseRef.once('value', function(snap) {
       var rushee = snap.val();
       this.setState({
@@ -153,19 +170,45 @@ class RusheeDetail extends React.Component {
   render() {
     var rushee_obj = this.state.rushee;
     if (rushee_obj == null) {
-      return (<div>loading</div>);
+      return (<div>Matt Sullivaning...</div>);
     }
 
     var url = rushee_obj.pictureURL == null || rushee_obj.pictureURL.length == 0
       ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
       : rushee_obj.pictureURL;
+
+    var i = parseInt(this.props.params.rusheeIndex);
+
+    var prevButton = null;
+    if (i > 0) {
+      prevButton = (
+        <Link to={"/detail/" + (i - 1)}>
+          <button
+            className="btn btn-primary top-button"
+          >
+            Previous
+          </button>
+        </Link>
+      );
+    }
+
+    var nextButton = null;
+    if (i < this.state.globalRushees.length - 1) {
+      nextButton = (
+        <Link to={"/detail/" + (i + 1)}>
+          <button
+            className="btn btn-primary top-button"
+          >
+            Next
+          </button>
+        </Link>
+      );
+    }
+
     return (
       <div className="container-fluid">
         <div className="row header">
-          <div className="col-xs-6"><h3>
-            {rushee_obj.firstName + ' ' + rushee_obj.lastName}
-          </h3></div>
-        <div className="col-xs-6"><span className="link-button">
+          <div className="col-xs-6">
             <Link to="/">
               <button
                 className="btn btn-primary"
@@ -173,7 +216,18 @@ class RusheeDetail extends React.Component {
                 Home
               </button>
             </Link>
+          </div>
+          <div className="col-xs-6"><span className="link-button">
+              {prevButton}
+              {nextButton}
           </span></div>
+        </div>
+        <div className="row header">
+          <div className="col-xs-6">
+            <h3>
+              {rushee_obj.firstName + ' ' + rushee_obj.lastName}
+            </h3>
+          </div>
         </div>
         <div className="row">
           <div className="col-md-8">
@@ -188,15 +242,15 @@ class RusheeDetail extends React.Component {
         <div className="row">
           <div className="col-xs-8">
             <div className="row">
-              <AllFratRating rusheeKey={this.props.params.rusheeKey} />
+              <AllFratRating rusheeKey={this.state.key} />
             </div>
             <div className="row">
-              <UserRating rusheeKey={this.props.params.rusheeKey} />
+              <UserRating rusheeKey={this.state.key} />
             </div>
           </div>
         </div>
         <div className="row">
-          <CommentList rusheeKey={this.props.params.rusheeKey} />
+          <CommentList rusheeKey={this.state.key} />
         </div>
       </div>
     );

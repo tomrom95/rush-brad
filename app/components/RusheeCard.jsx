@@ -30,14 +30,14 @@ class RusheeCard extends React.Component {
       <div className="col-md-4 card-container" key={this.state.rushee.key}>
         <div className="card text-center">
           <div className="card-block text-center">
-            <Link to={"/detail/" + this.props.rusheeKey}>
+            <Link to={"/detail/" + this.props.keyIndex}>
               <h4 className="card-title">
                 {rushee_obj.firstName + ' ' + rushee_obj.lastName}
               </h4>
             </Link>
           </div>
           <div className="img-crop">
-            <Link to={"/detail/" + this.props.rusheeKey}>
+            <Link to={"/detail/" + this.props.keyIndex}>
               <img
                 className="card-img-top"
                 src={url}

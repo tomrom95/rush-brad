@@ -4,6 +4,9 @@ import firebase from 'firebase';
 import CommentVoter from './CommentVoter.jsx';
 import ReplyList from './ReplyList.jsx';
 
+var ALLMONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+              'August', 'September', 'October', 'November', 'December'];
+
 class Comment extends React.Component {
   constructor(props) {
     super(props);
@@ -21,13 +24,30 @@ class Comment extends React.Component {
     user_ref.once('value', function(snap) {
       this.setState({
         user_name: snap.val().displayName,
-        comment_text: comment_obj.text
+        comment_text: comment_obj.text,
+        comment_time: comment_obj.date
       });
     }.bind(this));
   }
 
   toggleReplies() {
     this.setState({showReplies: !this.state.showReplies});
+  }
+
+  getDateString() {
+    var diff = (new Date().getTime() - this.state.comment_time)/(1000*60*60)
+    if (diff <= 24) {
+      return '' + diff + ' hours ago';
+    }
+    var curr_date = new Date(this.state.comment_time);
+    var month = ALLMONTHS[curr_date.getMonth()];
+    var year = curr_date.getFullYear();
+    var day = curr_date.getDate();
+    var min = curr_date.getMinutes();
+    var hour = curr_date.getHours();
+    var ampm = hour > 12 ? 'pm' : 'am';
+    return month + ' ' + day + ', ' + year + ' at '
+      + (hour%12) + ':' + min + ampm;
   }
 
   render() {
@@ -40,6 +60,7 @@ class Comment extends React.Component {
       <li className="list-group-item">
         <div className="row">
             <h5 className="list-group-item-heading">{this.state.user_name}</h5>
+            <p className="date-text">{this.getDateString()}</p>
             <p className="list-group-item-text">{this.state.comment_text}</p>
         </div>
         <div className="row">

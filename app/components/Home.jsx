@@ -51,6 +51,8 @@ class Home extends React.Component {
       rushees: [],
       sortOrder: order,
       searchText: search,
+      showModal: false,
+      selectedRushee: null
     };
   }
 
@@ -74,6 +76,18 @@ class Home extends React.Component {
 
   componentWillUnmount() {
     this.firebaseRef.off();
+  }
+
+  close() {
+    this.setState({ showModal: false });
+  }
+
+  open() {
+    this.setState({ showModal: true });
+  }
+
+  setSelectedRushee(rushee_key) {
+    this.setState({selectedRushee: rushee_key});
   }
 
   getSortOrderFunction(sortOrder) {
@@ -115,16 +129,23 @@ class Home extends React.Component {
     this.setState({searchText: e.target.value});
   }
 
+  getKeyList(rusheeList) {
+    return rusheeList.map(function(rushee) {
+      return rushee['.key'];
+    })
+  }
+
   render() {
     var self = this;
     var createRushee = function(rushee, index) {
       var clearFix = index % 3 == 0
         ? <div className="clearfix visible-md"></div>
         : null;
+      console.log('creating rushee card mapping');
       return (
         <div key={rushee['.key']}>
           { clearFix }
-          <RusheeCard rusheeKey={rushee['.key']} />
+          <RusheeCard rusheeKey={rushee['.key']} keyIndex={index} />
         </div>
       );
     };
@@ -137,7 +158,11 @@ class Home extends React.Component {
       var name = rushee.firstName + ' ' + rushee.lastName;
       return name.toLowerCase().includes(this.state.searchText.toLowerCase());
     }.bind(this));
-
+    localStorage.setItem(
+      'globalRusheeList',
+      JSON.stringify(this.getKeyList(rusheeList))
+    );
+    console.log('preparing for show');
     return (
       <div className="container-fluid">
         <div className="row header">

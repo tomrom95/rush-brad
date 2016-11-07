@@ -10,7 +10,7 @@ export default (
     <Route path="/" component={MainWrapper}>
       <IndexRoute component={Home} />
       <Route path="/add-rushee" component={AddRushee}></Route>
-      <Route path="detail/:rusheeKey" component={RusheeDetail} />
+      <Route path="detail/:rusheeIndex" component={RusheeDetail} />
     </Route>
   </Route>
 );

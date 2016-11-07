@@ -12,9 +12,17 @@ class CommentList extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.updateWithKey(nextProps.rusheeKey);
+  }
+
   componentWillMount() {
+    this.updateWithKey(this.props.rusheeKey);
+  }
+
+  updateWithKey(key) {
     this.firebaseRef = firebase.database().ref(
-      'comments/' + this.props.rusheeKey
+      'comments/' + key
     );
     this.firebaseRef.orderByChild("date").on('value', function(dataSnapshot) {
       var comments = {};

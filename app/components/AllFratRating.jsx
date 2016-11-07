@@ -12,9 +12,17 @@ class AllFratRating extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.updateWithKey(nextProps.rusheeKey);
+  }
+
   componentWillMount() {
+    this.updateWithKey(this.props.rusheeKey);
+  }
+
+  updateWithKey(key) {
     this.firebaseRef = firebase.database().ref(
-      'rushees/' + this.props.rusheeKey + '/ratings'
+      'rushees/' + key + '/ratings'
     );
     this.firebaseRef.on('value', function(dataSnapshot) {
       var total_rating = 0;

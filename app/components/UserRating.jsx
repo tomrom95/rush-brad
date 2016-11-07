@@ -11,10 +11,19 @@ class UserRating extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.updateWithKey(nextProps.rusheeKey);
+  }
+
   componentWillMount() {
+    this.updateWithKey(this.props.rusheeKey);
+  }
+
+  updateWithKey(key) {
     this.firebaseRef = firebase.database().ref(
-      'rushees/' + this.props.rusheeKey + '/ratings'
+      'rushees/' + key + '/ratings'
     );
+    this.setState({user_rating: null});
     this.firebaseRef.on('value', function(dataSnapshot) {
       dataSnapshot.forEach(function(childSnapshot) {
         if (childSnapshot.key == firebase.auth().currentUser.uid) {
