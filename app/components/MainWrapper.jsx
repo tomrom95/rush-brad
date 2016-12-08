@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteHandler } from 'react-router';
+import { RouteHandler, Link } from 'react-router';
 import firebase from 'firebase';
 
 class MainWrapper extends React.Component {
@@ -33,9 +33,26 @@ class MainWrapper extends React.Component {
 
   render() {
     if (this.state.user) {
+      console.log("here");
       return (
-        <div className="main-container">
-          {this.props.children}
+        <div>
+          <nav className="navbar navbar-light bg-faded navbar-fixed-top">
+            <button className="navbar-toggler hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"></button>
+            <div className="collapse navbar-toggleable-md" id="navbarResponsive">
+              <a className="navbar-brand" href="#">Rush Brad</a>
+              <ul className="nav navbar-nav">
+                <li className="nav-item">
+                  <Link to="/" className="nav-link">Home</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/add-rushee" className="nav-link">Add Rushee</Link>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <div className="main-container">
+            {this.props.children}
+          </div>
         </div>
       );
     } else {

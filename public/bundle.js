@@ -24193,11 +24193,11 @@
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _AddRushee = __webpack_require__(217);
+	var _AddRushee = __webpack_require__(219);
 
 	var _AddRushee2 = _interopRequireDefault(_AddRushee);
 
-	var _RusheeDetail = __webpack_require__(218);
+	var _RusheeDetail = __webpack_require__(220);
 
 	var _RusheeDetail2 = _interopRequireDefault(_RusheeDetail);
 
@@ -24213,7 +24213,7 @@
 	    { path: '/', component: _MainWrapper2.default },
 	    _react2.default.createElement(_reactRouter.IndexRoute, { component: _Home2.default }),
 	    _react2.default.createElement(_reactRouter.Route, { path: '/add-rushee', component: _AddRushee2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'detail/:rusheeIndex', component: _RusheeDetail2.default })
+	    _react2.default.createElement(_reactRouter.Route, { path: 'detail/:rusheeID', component: _RusheeDetail2.default })
 	  )
 	);
 
@@ -24288,10 +24288,51 @@
 	    key: 'render',
 	    value: function render() {
 	      if (this.state.user) {
+	        console.log("here");
 	        return _react2.default.createElement(
 	          'div',
-	          { className: 'main-container' },
-	          this.props.children
+	          null,
+	          _react2.default.createElement(
+	            'nav',
+	            { className: 'navbar navbar-light bg-faded navbar-fixed-top' },
+	            _react2.default.createElement('button', { className: 'navbar-toggler hidden-lg-up', type: 'button', 'data-toggle': 'collapse', 'data-target': '#navbarResponsive', 'aria-controls': 'navbarResponsive', 'aria-expanded': 'false', 'aria-label': 'Toggle navigation' }),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'collapse navbar-toggleable-md', id: 'navbarResponsive' },
+	              _react2.default.createElement(
+	                'a',
+	                { className: 'navbar-brand', href: '#' },
+	                'Rush Brad'
+	              ),
+	              _react2.default.createElement(
+	                'ul',
+	                { className: 'nav navbar-nav' },
+	                _react2.default.createElement(
+	                  'li',
+	                  { className: 'nav-item' },
+	                  _react2.default.createElement(
+	                    _reactRouter.Link,
+	                    { to: '/', className: 'nav-link' },
+	                    'Home'
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  'li',
+	                  { className: 'nav-item' },
+	                  _react2.default.createElement(
+	                    _reactRouter.Link,
+	                    { to: '/add-rushee', className: 'nav-link' },
+	                    'Add Rushee'
+	                  )
+	                )
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'main-container' },
+	            this.props.children
+	          )
 	        );
 	      } else {
 	        return _react2.default.createElement(
@@ -24932,6 +24973,10 @@
 
 	var _firebase2 = _interopRequireDefault(_firebase);
 
+	var _Feed = __webpack_require__(217);
+
+	var _Feed2 = _interopRequireDefault(_Feed);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25088,7 +25133,7 @@
 	    value: function render() {
 	      var self = this;
 	      var createRushee = function createRushee(rushee, index) {
-	        var clearFix = index % 3 == 0 ? _react2.default.createElement('div', { className: 'clearfix visible-md' }) : null;
+	        var clearFix = index % 2 == 0 ? _react2.default.createElement('div', { className: 'clearfix visible-md' }) : null;
 	        console.log('creating rushee card mapping');
 	        return _react2.default.createElement(
 	          'div',
@@ -25109,85 +25154,70 @@
 	        return name.toLowerCase().includes(this.state.searchText.toLowerCase());
 	      }.bind(this));
 	      localStorage.setItem('globalRusheeList', JSON.stringify(this.getKeyList(rusheeList)));
-	      console.log('preparing for show');
+	      console.log('preparing for ;alsjdf;lkja');
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'container-fluid' },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'row header' },
+	          { className: 'row' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-xs-6' },
-	            _react2.default.createElement(
-	              'h3',
-	              null,
-	              'Rushees'
-	            )
+	            { className: 'col-md-3 sidebar' },
+	            _react2.default.createElement(_Feed2.default, null)
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-xs-6' },
+	            { className: 'col-md-9 offset-md-3 main-wrapper' },
 	            _react2.default.createElement(
-	              'span',
-	              { className: 'link-button' },
+	              'div',
+	              { className: 'row header' },
 	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: '/add-rushee' },
+	                'div',
+	                { className: 'col-md-6' },
 	                _react2.default.createElement(
-	                  'button',
+	                  'label',
+	                  null,
+	                  'Sort by: '
+	                ),
+	                _react2.default.createElement(
+	                  'select',
 	                  {
-	                    className: 'btn btn-primary'
+	                    className: 'form-control filter',
+	                    ref: 'year',
+	                    defaultValue: this.state.sortOrder,
+	                    onChange: this.setSortOrder.bind(this)
 	                  },
-	                  'Add Rushee'
+	                  Object.keys(orderings).map(createSortSelection)
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'col-md-6' },
+	                _react2.default.createElement(
+	                  'label',
+	                  null,
+	                  'Search For: '
+	                ),
+	                _react2.default.createElement('input', {
+	                  onChange: this.handleSearch.bind(this),
+	                  value: this.state.searchText
+	                })
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'card-deck-wrapper' },
+	                _react2.default.createElement(
+	                  'div',
+	                  { className: 'card-deck' },
+	                  rusheeList.map(createRushee)
 	                )
 	              )
 	            )
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'row header' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-md-4' },
-	            _react2.default.createElement(
-	              'label',
-	              null,
-	              'Sort by: '
-	            ),
-	            _react2.default.createElement(
-	              'select',
-	              {
-	                className: 'form-control filter',
-	                ref: 'year',
-	                defaultValue: this.state.sortOrder,
-	                onChange: this.setSortOrder.bind(this)
-	              },
-	              Object.keys(orderings).map(createSortSelection)
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-md-4' },
-	            _react2.default.createElement(
-	              'label',
-	              null,
-	              'Search For: '
-	            ),
-	            _react2.default.createElement('input', {
-	              onChange: this.handleSearch.bind(this),
-	              value: this.state.searchText
-	            })
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'card-deck-wrapper' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'card-deck' },
-	            rusheeList.map(createRushee)
 	          )
 	        )
 	      );
@@ -25269,7 +25299,7 @@
 	      var url = rushee_obj.pictureURL == null || rushee_obj.pictureURL.length == 0 ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'col-md-4 card-container', key: this.state.rushee.key },
+	        { className: 'col-md-6 card-container', key: this.state.rushee.key },
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'card text-center' },
@@ -25710,6 +25740,296 @@
 
 	var _firebase2 = _interopRequireDefault(_firebase);
 
+	var _FeedRow = __webpack_require__(218);
+
+	var _FeedRow2 = _interopRequireDefault(_FeedRow);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Feed = function (_React$Component) {
+	  _inherits(Feed, _React$Component);
+
+	  function Feed(props) {
+	    _classCallCheck(this, Feed);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Feed).call(this, props));
+
+	    _this.state = {
+	      events: []
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Feed, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.firebaseRef = _firebase2.default.database().ref('feed').orderByChild('date').limitToLast(20);
+	      this.firebaseRef.on('value', function (dataSnapshot) {
+	        var events = [];
+	        dataSnapshot.forEach(function (childSnapshot) {
+	          var feedEvent = childSnapshot.val();
+	          feedEvent['.key'] = childSnapshot.key;
+	          events.push(feedEvent);
+	        }.bind(this));
+	        events.reverse();
+	        this.setState({
+	          events: events
+	        });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var createEventRow = function createEventRow(feedEvent, index) {
+	        return _react2.default.createElement(_FeedRow2.default, { key: feedEvent['.key'], feedEvent: feedEvent });
+	      };
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'h2',
+	          null,
+	          'Feed'
+	        ),
+	        _react2.default.createElement(
+	          'table',
+	          { className: 'table table-hover' },
+	          _react2.default.createElement(
+	            'tbody',
+	            null,
+	            this.state.events.map(createEventRow)
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Feed;
+	}(_react2.default.Component);
+
+	exports.default = Feed;
+
+/***/ },
+/* 218 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var FeedRow = function (_React$Component) {
+	  _inherits(FeedRow, _React$Component);
+
+	  function FeedRow(props) {
+	    _classCallCheck(this, FeedRow);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(FeedRow).call(this, props));
+
+	    _this.state = {
+	      feedEvent: null,
+	      actorName: "",
+	      userName: "",
+	      rusheeName: ""
+	    };
+	    return _this;
+	  }
+
+	  _createClass(FeedRow, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.setState({
+	        feedEvent: this.props.feedEvent
+	      });
+	      _firebase2.default.database().ref('users/' + this.props.feedEvent.actor).once('value', function (snap) {
+	        this.setState({
+	          actorName: snap.val().displayName
+	        });
+	      }.bind(this));
+	      if (this.props.feedEvent.user != null) {
+	        _firebase2.default.database().ref('users/' + this.props.feedEvent.user).once('value', function (snap) {
+	          this.setState({
+	            userName: snap.val().displayName
+	          });
+	        }.bind(this));
+	      }
+	      _firebase2.default.database().ref('rushees/' + this.props.feedEvent.rushee).once('value', function (snap) {
+	        var val = snap.val();
+	        this.setState({
+	          rusheeName: val.firstName + " " + val.lastName
+	        });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      console.log("rendering feed row");
+	      var text = null;
+	      switch (this.state.feedEvent.type) {
+	        case "comment":
+	          text = _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.actorName
+	            ),
+	            " commented on ",
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.rusheeName
+	            )
+	          );
+	          break;
+	        case "comment_vote":
+	          var vote = this.state.feedEvent.vote == 1 ? "upvoted" : "downvoted";
+	          text = _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.actorName
+	            ),
+	            " " + vote + " ",
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.userName
+	            ),
+	            "'s comment on ",
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.rusheeName
+	            )
+	          );
+	          break;
+	        case "reply":
+	          text = _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.actorName
+	            ),
+	            " replied to ",
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.userName
+	            ),
+	            "'s comment on ",
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.rusheeName
+	            )
+	          );
+	          break;
+	        case "rushee_added":
+	          text = _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.actorName
+	            ),
+	            " added ",
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              this.state.rusheeName
+	            ),
+	            " as a new rushee"
+	          );
+	          break;
+	      }
+	      return _react2.default.createElement(
+	        'tr',
+	        null,
+	        _react2.default.createElement(
+	          'td',
+	          null,
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: "/detail/" + this.state.feedEvent.rushee },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'table-cell' },
+	              text
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return FeedRow;
+	}(_react2.default.Component);
+	/*
+	<Link to={"/detail/" + this.props.keyIndex}>
+	  <tr>
+	    {text}
+	  </tr>
+	</Link>
+	*/
+
+	exports.default = FeedRow;
+
+/***/ },
+/* 219 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25747,6 +26067,7 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.firebaseRef = _firebase2.default.database().ref('rushees');
+	      this.feedRef = _firebase2.default.database().ref('feed');
 	    }
 	  }, {
 	    key: 'submitForm',
@@ -25767,7 +26088,7 @@
 	      }
 
 	      var self = this;
-	      this.firebaseRef.push(data, function (error) {
+	      var rusheeKey = this.firebaseRef.push(data, function (error) {
 	        if (error) {
 	          self.setState({ error: 'Error processing form input' });
 	        } else {
@@ -25776,6 +26097,12 @@
 	            success: 'Rushee submitted successfully'
 	          });
 	        }
+	      });
+	      this.feedRef.push({
+	        actor: _firebase2.default.auth().currentUser.uid,
+	        type: "rushee_added",
+	        rushee: rusheeKey,
+	        date: new Date().getTime()
 	      });
 	      this.setState({
 	        fields: initial_fields
@@ -25985,7 +26312,7 @@
 	exports.default = AddRushee;
 
 /***/ },
-/* 218 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26002,11 +26329,11 @@
 
 	var _reactRouter = __webpack_require__(159);
 
-	var _CommentList = __webpack_require__(219);
+	var _CommentList = __webpack_require__(221);
 
 	var _CommentList2 = _interopRequireDefault(_CommentList);
 
-	var _UserRating = __webpack_require__(224);
+	var _UserRating = __webpack_require__(226);
 
 	var _UserRating2 = _interopRequireDefault(_UserRating);
 
@@ -26027,6 +26354,7 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var initial_fields = {
+	  netID: '',
 	  email: '',
 	  year: "2020",
 	  phoneNumber: '',
@@ -26056,20 +26384,27 @@
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
 	      console.log("got props");
-	      var i = nextProps.params.rusheeIndex;
+	      if (isNaN(this.props.params.rusheeID)) {
+	        return;
+	      }
+	      var i = nextProps.params.rusheeID;
 	      var key = this.state.globalRushees[i];
 	      this.setRushee(key);
 	    }
 	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      console.log("mounting");
 	      var globalRushees = JSON.parse(localStorage.getItem("globalRusheeList"));
 	      this.setState({
 	        globalRushees: globalRushees
 	      });
-	      var i = this.props.params.rusheeIndex;
-	      var key = globalRushees[i];
+	      var key = null;
+	      if (isNaN(this.props.params.rusheeID)) {
+	        key = this.props.params.rusheeID;
+	      } else {
+	        var i = this.props.params.rusheeID;
+	        key = globalRushees[i];
+	      }
 	      this.setRushee(key);
 	    }
 	  }, {
@@ -26082,6 +26417,7 @@
 	        this.setState({
 	          rushee: rushee,
 	          fields: {
+	            netID: rushee.netID,
 	            email: rushee.email,
 	            year: rushee.year,
 	            phoneNumber: rushee.phoneNumber,
@@ -26096,6 +26432,7 @@
 	    key: 'editRushee',
 	    value: function editRushee() {
 	      var data = {
+	        netID: this.refs.netID.value,
 	        email: this.refs.email.value,
 	        phoneNumber: this.refs.phoneNumber.value,
 	        year: this.refs.year.value,
@@ -26105,7 +26442,7 @@
 	        if (error) {
 	          this.setState({ error: 'Error processing form input' });
 	        } else {
-	          this.setRushee();
+	          this.setRushee(this.state.key);
 	        }
 	      }.bind(this));
 	    }
@@ -26115,6 +26452,21 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'form-fields' },
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'label',
+	            null,
+	            'Net ID'
+	          ),
+	          _react2.default.createElement('input', {
+	            className: 'form-control',
+	            type: 'netID',
+	            ref: 'netID',
+	            defaultValue: this.state.fields.netID
+	          })
+	        ),
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -26237,6 +26589,16 @@
 	          _react2.default.createElement(
 	            'strong',
 	            null,
+	            'Net ID: '
+	          ),
+	          rushee_obj.netID
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
 	            'Email: '
 	          ),
 	          rushee_obj.email
@@ -26289,62 +26651,50 @@
 
 	      var url = rushee_obj.pictureURL == null || rushee_obj.pictureURL.length == 0 ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png" : rushee_obj.pictureURL;
 
-	      var i = parseInt(this.props.params.rusheeIndex);
-
 	      var prevButton = null;
-	      if (i > 0) {
-	        prevButton = _react2.default.createElement(
-	          _reactRouter.Link,
-	          { to: "/detail/" + (i - 1) },
-	          _react2.default.createElement(
-	            'button',
-	            {
-	              className: 'btn btn-primary top-button'
-	            },
-	            'Previous'
-	          )
-	        );
-	      }
-
 	      var nextButton = null;
-	      if (i < this.state.globalRushees.length - 1) {
-	        nextButton = _react2.default.createElement(
-	          _reactRouter.Link,
-	          { to: "/detail/" + (i + 1) },
-	          _react2.default.createElement(
-	            'button',
-	            {
-	              className: 'btn btn-primary top-button'
-	            },
-	            'Next'
-	          )
-	        );
+
+	      if (!isNaN(this.props.params.rusheeID)) {
+	        var i = parseInt(this.props.params.rusheeID);
+
+	        if (i > 0) {
+	          prevButton = _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: "/detail/" + (i - 1) },
+	            _react2.default.createElement(
+	              'button',
+	              {
+	                className: 'btn btn-primary top-button'
+	              },
+	              'Previous'
+	            )
+	          );
+	        }
+
+	        if (i < this.state.globalRushees.length - 1) {
+	          nextButton = _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: "/detail/" + (i + 1) },
+	            _react2.default.createElement(
+	              'button',
+	              {
+	                className: 'btn btn-primary top-button'
+	              },
+	              'Next'
+	            )
+	          );
+	        }
 	      }
 
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'container-fluid' },
+	        { className: 'container-fluid main-wrapper' },
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'row header' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-xs-6' },
-	            _react2.default.createElement(
-	              _reactRouter.Link,
-	              { to: '/' },
-	              _react2.default.createElement(
-	                'button',
-	                {
-	                  className: 'btn btn-primary'
-	                },
-	                'Home'
-	              )
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-xs-6' },
+	            { className: 'col-xs-6 offset-xs-6' },
 	            _react2.default.createElement(
 	              'span',
 	              { className: 'link-button' },
@@ -26417,7 +26767,7 @@
 	exports.default = RusheeDetail;
 
 /***/ },
-/* 219 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26434,7 +26784,7 @@
 
 	var _reactRouter = __webpack_require__(159);
 
-	var _Comment = __webpack_require__(220);
+	var _Comment = __webpack_require__(222);
 
 	var _Comment2 = _interopRequireDefault(_Comment);
 
@@ -26479,6 +26829,7 @@
 	    key: 'updateWithKey',
 	    value: function updateWithKey(key) {
 	      this.firebaseRef = _firebase2.default.database().ref('comments/' + key);
+	      this.feedRef = _firebase2.default.database().ref('feed');
 	      this.firebaseRef.orderByChild("date").on('value', function (dataSnapshot) {
 	        var comments = {};
 	        dataSnapshot.forEach(function (childSnapshot) {
@@ -26511,6 +26862,12 @@
 	          date: new Date().getTime(),
 	          author: _firebase2.default.auth().currentUser.uid
 	        });
+	        this.feedRef.push({
+	          actor: _firebase2.default.auth().currentUser.uid,
+	          type: "comment",
+	          rushee: this.props.rusheeKey,
+	          date: new Date().getTime()
+	        });
 	        this.setState({
 	          text: ''
 	        });
@@ -26521,7 +26878,7 @@
 	    value: function render() {
 	      var comment_comps = [];
 	      for (var key in this.state.comments) {
-	        comment_comps.push(_react2.default.createElement(_Comment2.default, { key: key, commentRef: this.state.comments[key] }));
+	        comment_comps.push(_react2.default.createElement(_Comment2.default, { key: key, commentRef: this.state.comments[key], rusheeKey: this.props.rusheeKey }));
 	      }
 	      return _react2.default.createElement(
 	        'div',
@@ -26567,7 +26924,7 @@
 	exports.default = CommentList;
 
 /***/ },
-/* 220 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26588,11 +26945,11 @@
 
 	var _firebase2 = _interopRequireDefault(_firebase);
 
-	var _CommentVoter = __webpack_require__(221);
+	var _CommentVoter = __webpack_require__(223);
 
 	var _CommentVoter2 = _interopRequireDefault(_CommentVoter);
 
-	var _ReplyList = __webpack_require__(222);
+	var _ReplyList = __webpack_require__(224);
 
 	var _ReplyList2 = _interopRequireDefault(_ReplyList);
 
@@ -26628,6 +26985,7 @@
 	      var comment_obj = this.props.commentRef.val();
 	      var user_id = comment_obj.author;
 	      var user_ref = _firebase2.default.database().ref('users/' + user_id);
+
 	      user_ref.once('value', function (snap) {
 	        this.setState({
 	          user_name: snap.val().displayName,
@@ -26644,9 +27002,15 @@
 	  }, {
 	    key: 'getDateString',
 	    value: function getDateString() {
-	      var diff = (new Date().getTime() - this.state.comment_time) / (1000 * 60 * 60);
-	      if (diff <= 24) {
-	        return '' + diff + ' hours ago';
+	      var diff = Math.floor((new Date().getTime() - this.state.comment_time) / (1000 * 60));
+	      if (diff <= 24 * 60) {
+	        if (diff < 60) {
+	          if (diff <= 1) {
+	            return 'less than a minute ago';
+	          }
+	          return '' + diff + ' minutes ago';
+	        }
+	        return '' + diff / 60 + ' hours ago';
 	      }
 	      var curr_date = new Date(this.state.comment_time);
 	      var month = ALLMONTHS[curr_date.getMonth()];
@@ -26696,7 +27060,7 @@
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'col-xs-12' },
-	            _react2.default.createElement(_CommentVoter2.default, { commentRef: this.props.commentRef }),
+	            _react2.default.createElement(_CommentVoter2.default, { commentRef: this.props.commentRef, rusheeKey: this.props.rusheeKey }),
 	            _react2.default.createElement(
 	              'span',
 	              {
@@ -26712,6 +27076,7 @@
 	          { className: 'row' },
 	          _react2.default.createElement(_ReplyList2.default, {
 	            commentRef: this.props.commentRef,
+	            rusheeKey: this.props.rusheeKey,
 	            collapse: !this.state.showReplies,
 	            onToggle: this.toggleReplies.bind(this)
 	          })
@@ -26726,7 +27091,7 @@
 	exports.default = Comment;
 
 /***/ },
-/* 221 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26778,6 +27143,7 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.firebaseRef = this.props.commentRef.ref.child('ratings');
+	      this.feedRef = _firebase2.default.database().ref('feed');
 
 	      this.firebaseRef.on('value', function (dataSnapshot) {
 	        var ratings = [];
@@ -26814,6 +27180,14 @@
 	          score: vote
 	        });
 	      }.bind(this));
+	      this.feedRef.push({
+	        actor: _firebase2.default.auth().currentUser.uid,
+	        type: "comment_vote",
+	        vote: vote,
+	        rushee: this.props.rusheeKey,
+	        user: this.props.commentRef.val().author,
+	        date: new Date().getTime()
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -26855,7 +27229,7 @@
 	exports.default = CommentVoter;
 
 /***/ },
-/* 222 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26872,7 +27246,7 @@
 
 	var _reactRouter = __webpack_require__(159);
 
-	var _Reply = __webpack_require__(223);
+	var _Reply = __webpack_require__(225);
 
 	var _Reply2 = _interopRequireDefault(_Reply);
 
@@ -26908,6 +27282,7 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.firebaseRef = this.props.commentRef.ref.child('replies');
+	      this.feedRef = _firebase2.default.database().ref('feed');
 	      this.firebaseRef.orderByChild("date").on('value', function (dataSnapshot) {
 	        var replies = {};
 	        var numReplies = 0;
@@ -26942,6 +27317,13 @@
 	          text: this.state.text,
 	          date: new Date().getTime(),
 	          author: _firebase2.default.auth().currentUser.uid
+	        });
+	        this.feedRef.push({
+	          actor: _firebase2.default.auth().currentUser.uid,
+	          type: "reply",
+	          rushee: this.props.rusheeKey,
+	          user: this.props.commentRef.val().author,
+	          date: new Date().getTime()
 	        });
 	        this.setState({
 	          text: ''
@@ -27019,7 +27401,7 @@
 	exports.default = ReplyList;
 
 /***/ },
-/* 223 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27040,7 +27422,7 @@
 
 	var _firebase2 = _interopRequireDefault(_firebase);
 
-	var _CommentVoter = __webpack_require__(221);
+	var _CommentVoter = __webpack_require__(223);
 
 	var _CommentVoter2 = _interopRequireDefault(_CommentVoter);
 
@@ -27126,7 +27508,7 @@
 	exports.default = Reply;
 
 /***/ },
-/* 224 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

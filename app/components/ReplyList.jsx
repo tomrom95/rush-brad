@@ -14,7 +14,8 @@ class ReplyList extends React.Component {
   }
 
   componentWillMount() {
-    this.firebaseRef = this.props.commentRef.ref.child('replies')
+    this.firebaseRef = this.props.commentRef.ref.child('replies');
+    this.feedRef = firebase.database().ref('feed');
     this.firebaseRef.orderByChild("date").on('value', function(dataSnapshot) {
       var replies = {};
       var numReplies = 0;
@@ -46,6 +47,13 @@ class ReplyList extends React.Component {
         text: this.state.text,
         date: new Date().getTime(),
         author: firebase.auth().currentUser.uid
+      });
+      this.feedRef.push({
+        actor: firebase.auth().currentUser.uid,
+        type: "reply",
+        rushee: this.props.rusheeKey,
+        user: this.props.commentRef.val().author,
+        date: new Date().getTime()
       });
       this.setState({
         text: ''

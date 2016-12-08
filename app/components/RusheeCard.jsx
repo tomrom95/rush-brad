@@ -27,7 +27,7 @@ class RusheeCard extends React.Component {
       ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
       : rushee_obj.pictureURL;
     return (
-      <div className="col-md-4 card-container" key={this.state.rushee.key}>
+      <div className="col-md-6 card-container" key={this.state.rushee.key}>
         <div className="card text-center">
           <div className="card-block text-center">
             <Link to={"/detail/" + this.props.keyIndex}>

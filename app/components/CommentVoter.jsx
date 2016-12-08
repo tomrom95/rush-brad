@@ -17,6 +17,7 @@ class CommentVoter extends React.Component {
 
   componentWillMount() {
     this.firebaseRef = this.props.commentRef.ref.child('ratings');
+    this.feedRef = firebase.database().ref('feed');
 
     this.firebaseRef.on('value', function(dataSnapshot) {
       var ratings = [];
@@ -52,6 +53,14 @@ class CommentVoter extends React.Component {
         score: vote
       });
     }.bind(this));
+    this.feedRef.push({
+      actor: firebase.auth().currentUser.uid,
+      type: "comment_vote",
+      vote: vote,
+      rushee: this.props.rusheeKey,
+      user: this.props.commentRef.val().author,
+      date: new Date().getTime()
+    });
   }
 
   render() {

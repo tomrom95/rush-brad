@@ -21,6 +21,7 @@ class Comment extends React.Component {
     var comment_obj = this.props.commentRef.val();
     var user_id = comment_obj.author;
     var user_ref = firebase.database().ref('users/' + user_id);
+
     user_ref.once('value', function(snap) {
       this.setState({
         user_name: snap.val().displayName,
@@ -35,9 +36,15 @@ class Comment extends React.Component {
   }
 
   getDateString() {
-    var diff = (new Date().getTime() - this.state.comment_time)/(1000*60*60)
-    if (diff <= 24) {
-      return '' + diff + ' hours ago';
+    var diff = Math.floor((new Date().getTime() - this.state.comment_time)/(1000*60))
+    if (diff <= 24*60) {
+      if (diff < 60) {
+        if (diff <= 1) {
+          return 'less than a minute ago';
+        }
+        return '' + (diff) + ' minutes ago';
+      }
+      return '' + (diff/60) + ' hours ago';
     }
     var curr_date = new Date(this.state.comment_time);
     var month = ALLMONTHS[curr_date.getMonth()];
@@ -65,7 +72,7 @@ class Comment extends React.Component {
         </div>
         <div className="row">
             <div className="col-xs-12">
-              <CommentVoter commentRef={this.props.commentRef} />
+              <CommentVoter commentRef={this.props.commentRef} rusheeKey={this.props.rusheeKey}/>
               <span
                 className="fake-link"
                 onClick={this.toggleReplies.bind(this)}
@@ -77,6 +84,7 @@ class Comment extends React.Component {
         <div className="row">
           <ReplyList
             commentRef={this.props.commentRef}
+            rusheeKey={this.props.rusheeKey}
             collapse={!this.state.showReplies}
             onToggle={this.toggleReplies.bind(this)}
           />

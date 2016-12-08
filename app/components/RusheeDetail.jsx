@@ -6,6 +6,7 @@ import AllFratRating from './AllFratRating.jsx';
 import firebase from 'firebase';
 
 var initial_fields = {
+  netID: '',
   email: '',
   year: "2020",
   phoneNumber: '',
@@ -27,19 +28,26 @@ class RusheeDetail extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     console.log("got props");
-    var i = nextProps.params.rusheeIndex;
+    if (isNaN(this.props.params.rusheeID)) {
+      return;
+    }
+    var i = nextProps.params.rusheeID;
     var key = this.state.globalRushees[i];
     this.setRushee(key);
   }
 
   componentWillMount() {
-    console.log("mounting");
     var globalRushees = JSON.parse(localStorage.getItem("globalRusheeList"));
     this.setState({
       globalRushees: globalRushees
-    })
-    var i = this.props.params.rusheeIndex;
-    var key = globalRushees[i];
+    });
+    var key = null;
+    if (isNaN(this.props.params.rusheeID)) {
+      key = this.props.params.rusheeID;
+    } else {
+      var i = this.props.params.rusheeID;
+      key = globalRushees[i];
+    }
     this.setRushee(key);
   }
 
@@ -51,6 +59,7 @@ class RusheeDetail extends React.Component {
       this.setState({
         rushee: rushee,
         fields: {
+          netID: rushee.netID,
           email: rushee.email,
           year: rushee.year,
           phoneNumber: rushee.phoneNumber,
@@ -64,6 +73,7 @@ class RusheeDetail extends React.Component {
 
   editRushee() {
     var data = {
+      netID: this.refs.netID.value,
       email: this.refs.email.value,
       phoneNumber: this.refs.phoneNumber.value,
       year: this.refs.year.value,
@@ -75,7 +85,7 @@ class RusheeDetail extends React.Component {
         if (error) {
           this.setState({error: 'Error processing form input'});
         } else {
-          this.setRushee();
+          this.setRushee(this.state.key);
         }
       }.bind(this)
     );
@@ -84,6 +94,15 @@ class RusheeDetail extends React.Component {
   renderEditing() {
     return (
       <div className="form-fields">
+        <div>
+          <label>Net ID</label>
+          <input
+            className="form-control"
+            type="netID"
+            ref="netID"
+            defaultValue={this.state.fields.netID}
+          />
+        </div>
         <div>
           <label>Email</label>
           <input
@@ -152,6 +171,7 @@ class RusheeDetail extends React.Component {
     var rushee_obj = this.state.rushee;
     return (
       <div>
+        <p><strong>Net ID: </strong>{rushee_obj.netID}</p>
         <p><strong>Email: </strong>{rushee_obj.email}</p>
         <p><strong>Year: </strong>{rushee_obj.year}</p>
         <p><strong>Phone Number: </strong>{rushee_obj.phoneNumber}</p>
@@ -177,47 +197,41 @@ class RusheeDetail extends React.Component {
       ? "https://upload.wikimedia.org/wikipedia/commons/0/09/Man_Silhouette.png"
       : rushee_obj.pictureURL;
 
-    var i = parseInt(this.props.params.rusheeIndex);
-
     var prevButton = null;
-    if (i > 0) {
-      prevButton = (
-        <Link to={"/detail/" + (i - 1)}>
-          <button
-            className="btn btn-primary top-button"
-          >
-            Previous
-          </button>
-        </Link>
-      );
-    }
-
     var nextButton = null;
-    if (i < this.state.globalRushees.length - 1) {
-      nextButton = (
-        <Link to={"/detail/" + (i + 1)}>
-          <button
-            className="btn btn-primary top-button"
-          >
-            Next
-          </button>
-        </Link>
-      );
+
+    if (!(isNaN(this.props.params.rusheeID))) {
+      var i = parseInt(this.props.params.rusheeID);
+
+      if (i > 0) {
+        prevButton = (
+          <Link to={"/detail/" + (i - 1)}>
+            <button
+              className="btn btn-primary top-button"
+            >
+              Previous
+            </button>
+          </Link>
+        );
+      }
+
+      if (i < this.state.globalRushees.length - 1) {
+        nextButton = (
+          <Link to={"/detail/" + (i + 1)}>
+            <button
+              className="btn btn-primary top-button"
+            >
+              Next
+            </button>
+          </Link>
+        );
+      }
     }
 
     return (
-      <div className="container-fluid">
+      <div className="container-fluid main-wrapper">
         <div className="row header">
-          <div className="col-xs-6">
-            <Link to="/">
-              <button
-                className="btn btn-primary"
-              >
-                Home
-              </button>
-            </Link>
-          </div>
-          <div className="col-xs-6"><span className="link-button">
+          <div className="col-xs-6 offset-xs-6"><span className="link-button">
               {prevButton}
               {nextButton}
           </span></div>

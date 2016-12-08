@@ -1,5 +1,65 @@
 @import url("//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc2/css/bootstrap-glyphicons.css");
 
+/* Hide for mobile, show later */
+.sidebar {
+  display: none;
+}
+
+.navbar {
+  z-index: 10000;
+}
+
+.table td {
+  padding: 0;
+}
+
+.table-cell {
+  padding: .75rem;
+}
+
+td a:hover {
+  text-decoration: none;
+}
+
+@media (min-width: 576px) {
+  .card-deck {
+    border-spacing: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    padding-top: 80px;
+    z-index: 1000;
+    display: block;
+    height: 100%;
+    overflow: auto; /* Scrollable contents if viewport is shorter than content. */
+    border-right: 1px solid #eee;
+  }
+}
+
+.main-wrapper {
+  padding-top: 80px;
+}
+
+img {
+    image-orientation: from-image;
+}
+
+td {
+  font-size: 12px;
+}
+
+td p {
+  margin-bottom: 0;
+}
+
+h2 {
+  text-align: center;
+}
+
 .list-group-item-heading {
   color: #0275d8;
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import RusheeCard from './RusheeCard.jsx';
 import { Link } from 'react-router';
 import firebase from 'firebase';
+import Feed from './Feed.jsx';
 
 var orderings = {
   'First Name A-Z': {
@@ -138,7 +139,7 @@ class Home extends React.Component {
   render() {
     var self = this;
     var createRushee = function(rushee, index) {
-      var clearFix = index % 3 == 0
+      var clearFix = index % 2 == 0
         ? <div className="clearfix visible-md"></div>
         : null;
       console.log('creating rushee card mapping');
@@ -162,44 +163,41 @@ class Home extends React.Component {
       'globalRusheeList',
       JSON.stringify(this.getKeyList(rusheeList))
     );
-    console.log('preparing for show');
+    console.log('preparing for ;alsjdf;lkja');
     return (
       <div className="container-fluid">
-        <div className="row header">
-          <div className="col-xs-6"><h3>Rushees</h3></div>
-          <div className="col-xs-6"><span className="link-button">
-            <Link to="/add-rushee">
-              <button
-                className="btn btn-primary"
-              >
-                Add Rushee
-              </button>
-            </Link>
-          </span></div>
-        </div>
-        <div className="row header">
-          <div className="col-md-4">
-            <label>Sort by:&nbsp;</label>
-            <select
-              className="form-control filter"
-              ref="year"
-              defaultValue={this.state.sortOrder}
-              onChange={this.setSortOrder.bind(this)}
-            >
-              { Object.keys(orderings).map(createSortSelection) }
-            </select>
+        <div className="row">
+          <div className="col-md-3 sidebar">
+            <Feed />
           </div>
-          <div className="col-md-4">
-            <label>Search For:&nbsp;</label>
-            <input
-              onChange={ this.handleSearch.bind(this) }
-              value={ this.state.searchText }
-            />
-          </div>
-        </div>
-        <div className="card-deck-wrapper">
-          <div className="card-deck">
-            { rusheeList.map(createRushee) }
+          <div className="col-md-9 offset-md-3 main-wrapper">
+            <div className="row header">
+              <div className="col-md-6">
+                <label>Sort by:&nbsp;</label>
+                <select
+                  className="form-control filter"
+                  ref="year"
+                  defaultValue={this.state.sortOrder}
+                  onChange={this.setSortOrder.bind(this)}
+                >
+                  { Object.keys(orderings).map(createSortSelection) }
+                </select>
+              </div>
+              <div className="col-md-6">
+                <label>Search For:&nbsp;</label>
+                <input
+                  onChange={ this.handleSearch.bind(this) }
+                  value={ this.state.searchText }
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="card-deck-wrapper">
+                <div className="card-deck">
+                  { rusheeList.map(createRushee) }
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

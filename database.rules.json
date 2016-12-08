@@ -21,6 +21,11 @@
     "comments": {
       ".read": "auth != null",
       ".write": "auth != null"
+    },
+    "feed": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      ".indexOn": "date"
     }
   }
 }

@@ -24,6 +24,7 @@ class CommentList extends React.Component {
     this.firebaseRef = firebase.database().ref(
       'comments/' + key
     );
+    this.feedRef = firebase.database().ref('feed');
     this.firebaseRef.orderByChild("date").on('value', function(dataSnapshot) {
       var comments = {};
       dataSnapshot.forEach(function(childSnapshot) {
@@ -53,6 +54,12 @@ class CommentList extends React.Component {
         date: new Date().getTime(),
         author: firebase.auth().currentUser.uid
       });
+      this.feedRef.push({
+        actor: firebase.auth().currentUser.uid,
+        type: "comment",
+        rushee: this.props.rusheeKey,
+        date: new Date().getTime()
+      });
       this.setState({
         text: ''
       });
@@ -63,7 +70,7 @@ class CommentList extends React.Component {
     var comment_comps = [];
     for (var key in this.state.comments) {
       comment_comps.push(
-        <Comment key={key} commentRef={this.state.comments[key]} />
+        <Comment key={key} commentRef={this.state.comments[key]} rusheeKey={this.props.rusheeKey}/>
       );
     }
     return (

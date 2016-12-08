@@ -22,6 +22,7 @@ class AddRushee extends React.Component {
   }
   componentWillMount() {
     this.firebaseRef = firebase.database().ref('rushees');
+    this.feedRef = firebase.database().ref('feed');
   }
 
   submitForm() {
@@ -41,7 +42,7 @@ class AddRushee extends React.Component {
     }
 
     var self = this;
-    this.firebaseRef.push(
+    var rusheeKey = this.firebaseRef.push(
       data,
       function(error) {
         if (error) {
@@ -54,6 +55,12 @@ class AddRushee extends React.Component {
         }
       }
     );
+    this.feedRef.push({
+      actor: firebase.auth().currentUser.uid,
+      type: "rushee_added",
+      rushee: rusheeKey,
+      date: new Date().getTime()
+    });
     this.setState({
       fields: initial_fields
     });
