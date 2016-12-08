@@ -3,19 +3,20 @@ import { Link } from 'react-router';
 import firebase from 'firebase';
 import FeedRow from './FeedRow.jsx';
 
+const LOAD_COUNT = 5;
+
 class Feed extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       events: [],
+      moreToCome: true,
     };
   }
 
   componentWillMount() {
-    this.firebaseRef = firebase.database().ref('feed')
-      .orderByChild('date')
-      .limitToLast(20);
-    this.firebaseRef.on('value', function(dataSnapshot) {
+    this.firebaseRef = firebase.database().ref('feed').orderByChild('date');
+    this.firebaseRef.limitToLast(LOAD_COUNT).on('value', function(dataSnapshot) {
       var events = [];
       dataSnapshot.forEach(function(childSnapshot) {
         var feedEvent = childSnapshot.val();
@@ -29,12 +30,41 @@ class Feed extends React.Component {
     }.bind(this));
   }
 
+  addMore() {
+    var lastEvent = this.state.events[this.state.events.length - 1];
+    this.firebaseRef.endAt(lastEvent.date, lastEvent['.key'])
+      .limitToLast(LOAD_COUNT).on('value', function(dataSnapshot) {
+        var newEvents = [];
+        dataSnapshot.forEach(function(childSnapshot) {
+          var feedEvent = childSnapshot.val();
+          feedEvent['.key'] = childSnapshot.key;
+          newEvents.push(feedEvent);
+        }.bind(this));
+        newEvents.reverse();
+        var moreToCome = newEvents.length == LOAD_COUNT;
+        this.setState({
+          events: this.state.events.concat(newEvents),
+          moreToCome: moreToCome
+        });
+      }.bind(this));
+  }
+
   render() {
     var createEventRow = function(feedEvent, index) {
       return (
         <FeedRow key={feedEvent['.key']} feedEvent={feedEvent}/>
       );
     };
+    var loadButton = this.state.moreToCome ? (
+      <div className="row load-row">
+          <button
+            className="btn btn-primary"
+            onClick={this.addMore.bind(this)}
+          >
+          Load More
+          </button>
+      </div>
+    ) : null;
     return (
       <div>
         <h2>Feed</h2>
@@ -43,6 +73,7 @@ class Feed extends React.Component {
             {this.state.events.map(createEventRow)}
           </tbody>
         </table>
+        {loadButton}
       </div>
     );
   }

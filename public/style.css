@@ -52,6 +52,11 @@ td a:hover {
   }
 }
 
+.load-row {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
 .detail-wrapper {
   padding-top:80px;
 }

@@ -25772,6 +25772,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var LOAD_COUNT = 5;
+
 	var Feed = function (_React$Component) {
 	  _inherits(Feed, _React$Component);
 
@@ -25781,7 +25783,8 @@
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Feed).call(this, props));
 
 	    _this.state = {
-	      events: []
+	      events: [],
+	      moreToCome: true
 	    };
 	    return _this;
 	  }
@@ -25789,8 +25792,8 @@
 	  _createClass(Feed, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      this.firebaseRef = _firebase2.default.database().ref('feed').orderByChild('date').limitToLast(20);
-	      this.firebaseRef.on('value', function (dataSnapshot) {
+	      this.firebaseRef = _firebase2.default.database().ref('feed').orderByChild('date');
+	      this.firebaseRef.limitToLast(LOAD_COUNT).on('value', function (dataSnapshot) {
 	        var events = [];
 	        dataSnapshot.forEach(function (childSnapshot) {
 	          var feedEvent = childSnapshot.val();
@@ -25804,11 +25807,42 @@
 	      }.bind(this));
 	    }
 	  }, {
+	    key: 'addMore',
+	    value: function addMore() {
+	      var lastEvent = this.state.events[this.state.events.length - 1];
+	      this.firebaseRef.endAt(lastEvent.date, lastEvent['.key']).limitToLast(LOAD_COUNT).on('value', function (dataSnapshot) {
+	        var newEvents = [];
+	        dataSnapshot.forEach(function (childSnapshot) {
+	          var feedEvent = childSnapshot.val();
+	          feedEvent['.key'] = childSnapshot.key;
+	          newEvents.push(feedEvent);
+	        }.bind(this));
+	        newEvents.reverse();
+	        var moreToCome = newEvents.length == LOAD_COUNT;
+	        this.setState({
+	          events: this.state.events.concat(newEvents),
+	          moreToCome: moreToCome
+	        });
+	      }.bind(this));
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var createEventRow = function createEventRow(feedEvent, index) {
 	        return _react2.default.createElement(_FeedRow2.default, { key: feedEvent['.key'], feedEvent: feedEvent });
 	      };
+	      var loadButton = this.state.moreToCome ? _react2.default.createElement(
+	        'div',
+	        { className: 'row load-row' },
+	        _react2.default.createElement(
+	          'button',
+	          {
+	            className: 'btn btn-primary',
+	            onClick: this.addMore.bind(this)
+	          },
+	          'Load More'
+	        )
+	      ) : null;
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -25825,7 +25859,8 @@
 	            null,
 	            this.state.events.map(createEventRow)
 	          )
-	        )
+	        ),
+	        loadButton
 	      );
 	    }
 	  }]);
