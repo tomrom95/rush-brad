@@ -1,9 +1,6 @@
 @import url("//netdna.bootstrapcdn.com/bootstrap/3.0.0-rc2/css/bootstrap-glyphicons.css");
 
 /* Hide for mobile, show later */
-.sidebar {
-  display: none;
-}
 
 .navbar {
   z-index: 10000;
@@ -27,6 +24,12 @@ td a:hover {
   }
 }
 
+.feed-button {
+  text-align:center;
+  display:block;
+  padding-top: 80px;
+}
+
 @media (min-width: 768px) {
   .sidebar {
     position: fixed;
@@ -38,10 +41,15 @@ td a:hover {
     overflow: auto; /* Scrollable contents if viewport is shorter than content. */
     border-right: 1px solid #eee;
   }
-}
 
-.main-wrapper {
-  padding-top: 80px;
+  .main-wrapper {
+    padding-top: 80px;
+  }
+
+  .feed-button {
+    display: none;
+    padding-top: 0;
+  }
 }
 
 img {
@@ -216,3 +224,13 @@ a:hover {
 
 .rsr--disabled .rsr-container:hover {
     cursor: not-allowed; }
+
+.hidden {
+  display:none;
+}
+
+@media (min-width: 768px) {
+  .hidden {
+    display:block;
+  }
+}

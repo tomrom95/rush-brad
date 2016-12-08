@@ -25039,7 +25039,8 @@
 	      sortOrder: order,
 	      searchText: search,
 	      showModal: false,
-	      selectedRushee: null
+	      selectedRushee: null,
+	      showFeed: false
 	    };
 	    return _this;
 	  }
@@ -25129,6 +25130,13 @@
 	      });
 	    }
 	  }, {
+	    key: 'toggleFeed',
+	    value: function toggleFeed() {
+	      this.setState({
+	        showFeed: !this.state.showFeed
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var self = this;
@@ -25160,15 +25168,27 @@
 	        { className: 'container-fluid' },
 	        _react2.default.createElement(
 	          'div',
+	          { className: 'row feed-button' },
+	          _react2.default.createElement(
+	            'button',
+	            {
+	              className: 'btn btn-primary',
+	              onClick: this.toggleFeed.bind(this)
+	            },
+	            this.state.showFeed ? "Show Rushees" : "Show Feed"
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
 	          { className: 'row' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-3 sidebar' },
+	            { className: "col-md-3 sidebar" + (this.state.showFeed ? "" : " hidden") },
 	            _react2.default.createElement(_Feed2.default, null)
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-9 offset-md-3 main-wrapper' },
+	            { className: "col-md-9 offset-md-3 main-wrapper" + (this.state.showFeed ? " hidden" : "") },
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'row header' },

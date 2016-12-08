@@ -53,7 +53,8 @@ class Home extends React.Component {
       sortOrder: order,
       searchText: search,
       showModal: false,
-      selectedRushee: null
+      selectedRushee: null,
+      showFeed: false
     };
   }
 
@@ -136,6 +137,12 @@ class Home extends React.Component {
     })
   }
 
+  toggleFeed() {
+    this.setState({
+      showFeed: !this.state.showFeed
+    });
+  }
+
   render() {
     var self = this;
     var createRushee = function(rushee, index) {
@@ -166,11 +173,19 @@ class Home extends React.Component {
     console.log('preparing for ;alsjdf;lkja');
     return (
       <div className="container-fluid">
+        <div className="row feed-button">
+          <button
+            className="btn btn-primary"
+            onClick={this.toggleFeed.bind(this)}
+          >
+            {this.state.showFeed ? "Show Rushees" : "Show Feed"}
+          </button>
+        </div>
         <div className="row">
-          <div className="col-md-3 sidebar">
+          <div className={"col-md-3 sidebar" + (this.state.showFeed ? "" : " hidden")}>
             <Feed />
           </div>
-          <div className="col-md-9 offset-md-3 main-wrapper">
+          <div className={"col-md-9 offset-md-3 main-wrapper"+ (this.state.showFeed ? " hidden" : "")}>
             <div className="row header">
               <div className="col-md-6">
                 <label>Sort by:&nbsp;</label>
