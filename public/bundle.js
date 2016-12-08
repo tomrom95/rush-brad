@@ -26108,7 +26108,7 @@
 	      }
 
 	      var self = this;
-	      var rusheeKey = this.firebaseRef.push(data, function (error) {
+	      var rusheeRef = this.firebaseRef.push(data, function (error) {
 	        if (error) {
 	          self.setState({ error: 'Error processing form input' });
 	        } else {
@@ -26121,7 +26121,7 @@
 	      this.feedRef.push({
 	        actor: _firebase2.default.auth().currentUser.uid,
 	        type: "rushee_added",
-	        rushee: rusheeKey,
+	        rushee: rusheeRef.key,
 	        date: new Date().getTime()
 	      });
 	      this.setState({
@@ -26151,25 +26151,6 @@
 	              'h4',
 	              null,
 	              'Add a Rushee'
-	            )
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-xs-6' },
-	            _react2.default.createElement(
-	              'span',
-	              { className: 'link-button' },
-	              _react2.default.createElement(
-	                _reactRouter.Link,
-	                { to: '/' },
-	                _react2.default.createElement(
-	                  'button',
-	                  {
-	                    className: 'btn btn-primary'
-	                  },
-	                  'Home'
-	                )
-	              )
 	            )
 	          )
 	        ),
@@ -26708,31 +26689,27 @@
 
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'container-fluid main-wrapper' },
+	        { className: 'container-fluid main-wrapper detail-wrapper' },
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'row header' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-xs-6 offset-xs-6' },
+	            { className: 'col-xs-9' },
+	            _react2.default.createElement(
+	              'h3',
+	              null,
+	              rushee_obj.firstName + ' ' + rushee_obj.lastName
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'col-xs-3' },
 	            _react2.default.createElement(
 	              'span',
 	              { className: 'link-button' },
 	              prevButton,
 	              nextButton
-	            )
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'row header' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-xs-6' },
-	            _react2.default.createElement(
-	              'h3',
-	              null,
-	              rushee_obj.firstName + ' ' + rushee_obj.lastName
 	            )
 	          )
 	        ),

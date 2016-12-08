@@ -52,6 +52,10 @@ td a:hover {
   }
 }
 
+.detail-wrapper {
+  padding-top:80px;
+}
+
 img {
     image-orientation: from-image;
 }
@@ -177,6 +181,7 @@ span.glyphicon, span.glyphicon {
 
 .form-wrapper {
   padding: 10px 10px 10px 10px;
+  padding-top: 80px;
 }
 
 a {

@@ -42,7 +42,7 @@ class AddRushee extends React.Component {
     }
 
     var self = this;
-    var rusheeKey = this.firebaseRef.push(
+    var rusheeRef = this.firebaseRef.push(
       data,
       function(error) {
         if (error) {
@@ -58,7 +58,7 @@ class AddRushee extends React.Component {
     this.feedRef.push({
       actor: firebase.auth().currentUser.uid,
       type: "rushee_added",
-      rushee: rusheeKey,
+      rushee: rusheeRef.key,
       date: new Date().getTime()
     });
     this.setState({
@@ -78,15 +78,6 @@ class AddRushee extends React.Component {
       <div className="form-wrapper">
         <div className="row">
           <div className="col-xs-6"><h4>Add a Rushee</h4></div>
-          <div className="col-xs-6"><span className="link-button">
-            <Link to="/">
-              <button
-                className="btn btn-primary"
-              >
-                Home
-              </button>
-            </Link>
-          </span></div>
         </div>
         <div className="form-fields">
           <div>

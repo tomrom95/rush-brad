@@ -229,19 +229,17 @@ class RusheeDetail extends React.Component {
     }
 
     return (
-      <div className="container-fluid main-wrapper">
+      <div className="container-fluid main-wrapper detail-wrapper">
         <div className="row header">
-          <div className="col-xs-6 offset-xs-6"><span className="link-button">
-              {prevButton}
-              {nextButton}
-          </span></div>
-        </div>
-        <div className="row header">
-          <div className="col-xs-6">
+          <div className="col-xs-9">
             <h3>
               {rushee_obj.firstName + ' ' + rushee_obj.lastName}
             </h3>
           </div>
+          <div className="col-xs-3"><span className="link-button">
+              {prevButton}
+              {nextButton}
+          </span></div>
         </div>
         <div className="row">
           <div className="col-md-8">
