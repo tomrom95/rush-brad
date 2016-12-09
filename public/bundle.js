@@ -25772,7 +25772,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var LOAD_COUNT = 5;
+	var LOAD_COUNT = 10;
 
 	var Feed = function (_React$Component) {
 	  _inherits(Feed, _React$Component);
@@ -25784,6 +25784,7 @@
 
 	    _this.state = {
 	      events: [],
+	      initialized: false,
 	      moreToCome: true
 	    };
 	    return _this;
@@ -25793,7 +25794,7 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.firebaseRef = _firebase2.default.database().ref('feed').orderByChild('date');
-	      this.firebaseRef.limitToLast(LOAD_COUNT).on('value', function (dataSnapshot) {
+	      this.firebaseRef.limitToLast(LOAD_COUNT).once('value').then(function (dataSnapshot) {
 	        var events = [];
 	        dataSnapshot.forEach(function (childSnapshot) {
 	          var feedEvent = childSnapshot.val();
@@ -25805,12 +25806,23 @@
 	          events: events
 	        });
 	      }.bind(this));
+	      _firebase2.default.database().ref('feed').limitToLast(1).on('child_added', function (snapshot, prevKey) {
+	        if (this.state.initialized) {
+	          var events = this.state.events;
+	          var feedEvent = snapshot.val();
+	          feedEvent['.key'] = snapshot.key;
+	          events.unshift(feedEvent);
+	          this.setState({ events: events });
+	        } else {
+	          this.setState({ initialized: true });
+	        }
+	      }.bind(this));
 	    }
 	  }, {
 	    key: 'addMore',
 	    value: function addMore() {
 	      var lastEvent = this.state.events[this.state.events.length - 1];
-	      this.firebaseRef.endAt(lastEvent.date, lastEvent['.key']).limitToLast(LOAD_COUNT).on('value', function (dataSnapshot) {
+	      this.firebaseRef.endAt(lastEvent.date, lastEvent['.key']).limitToLast(LOAD_COUNT).once('value').then(function (dataSnapshot) {
 	        var newEvents = [];
 	        dataSnapshot.forEach(function (childSnapshot) {
 	          var feedEvent = childSnapshot.val();
@@ -25945,7 +25957,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      console.log("rendering feed row");
 	      var text = null;
 	      switch (this.state.feedEvent.type) {
 	        case "comment":

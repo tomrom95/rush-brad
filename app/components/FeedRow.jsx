@@ -41,7 +41,6 @@ class FeedRow extends React.Component {
   }
 
   render() {
-    console.log("rendering feed row");
     var text = null;
     switch (this.state.feedEvent.type) {
       case "comment":
