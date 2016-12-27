@@ -23,7 +23,7 @@ class MainWrapper extends React.Component {
     var provider = new firebase.auth.FacebookAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function(result) {
       var user = result.user;
-      this.firebaseRef.ref('users/' + user.uid).set({
+      this.firebaseRef.ref('users/' + user.uid).update({
         'displayName': user.displayName,
       });
     }.bind(this)).catch(function(error) {

@@ -24277,7 +24277,7 @@
 	      var provider = new _firebase2.default.auth.FacebookAuthProvider();
 	      _firebase2.default.auth().signInWithPopup(provider).then(function (result) {
 	        var user = result.user;
-	        this.firebaseRef.ref('users/' + user.uid).set({
+	        this.firebaseRef.ref('users/' + user.uid).update({
 	          'displayName': user.displayName
 	        });
 	      }.bind(this)).catch(function (error) {
@@ -25130,11 +25130,9 @@
 	      });
 	    }
 	  }, {
-	    key: 'toggleFeed',
-	    value: function toggleFeed() {
-	      this.setState({
-	        showFeed: !this.state.showFeed
-	      });
+	    key: 'setShowFeed',
+	    value: function setShowFeed(newState) {
+	      this.setState({ showFeed: newState });
 	    }
 	  }, {
 	    key: 'render',
@@ -25170,12 +25168,22 @@
 	          'div',
 	          { className: 'row feed-button' },
 	          _react2.default.createElement(
-	            'button',
-	            {
-	              className: 'btn btn-primary',
-	              onClick: this.toggleFeed.bind(this)
-	            },
-	            this.state.showFeed ? "Show Rushees" : "Show Feed"
+	            'div',
+	            { className: 'input-group toggler' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'input-group-btn' },
+	              _react2.default.createElement(
+	                'button',
+	                { type: 'button', className: "btn btn-secondary" + (this.state.showFeed ? "" : " attended"), onClick: this.setShowFeed.bind(this, false) },
+	                'Rushees'
+	              ),
+	              _react2.default.createElement(
+	                'button',
+	                { type: 'button', className: "btn btn-secondary" + (this.state.showFeed ? " attended" : ""), onClick: this.setShowFeed.bind(this, true) },
+	                'Feed'
+	              )
+	            )
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -26388,6 +26396,10 @@
 
 	var _AllFratRating2 = _interopRequireDefault(_AllFratRating);
 
+	var _EventTracker = __webpack_require__(227);
+
+	var _EventTracker2 = _interopRequireDefault(_EventTracker);
+
 	var _firebase = __webpack_require__(210);
 
 	var _firebase2 = _interopRequireDefault(_firebase);
@@ -26422,7 +26434,8 @@
 	      fields: initial_fields,
 	      success: null,
 	      globalRushees: [],
-	      key: null
+	      key: null,
+	      viewInfo: true
 	    };
 	    return _this;
 	  }
@@ -26498,7 +26511,7 @@
 	    value: function renderEditing() {
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'form-fields' },
+	        { className: 'form-fields row' },
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -26629,7 +26642,7 @@
 	      var rushee_obj = this.state.rushee;
 	      return _react2.default.createElement(
 	        'div',
-	        null,
+	        { className: 'row' },
 	        _react2.default.createElement(
 	          'p',
 	          null,
@@ -26685,8 +26698,14 @@
 	      );
 	    }
 	  }, {
+	    key: 'setViewInfo',
+	    value: function setViewInfo(newState) {
+	      this.setState({ viewInfo: newState });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      console.log("in rushee detail");
 	      var rushee_obj = this.state.rushee;
 	      if (rushee_obj == null) {
 	        return _react2.default.createElement(
@@ -26764,7 +26783,7 @@
 	          { className: 'row' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-8' },
+	            { className: 'col-md-6' },
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'detail-img-container' },
@@ -26773,8 +26792,30 @@
 	          ),
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'col-md-4' },
-	            this.state.editing ? this.renderEditing() : this.renderNormal()
+	            { className: 'col-md-6' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'input-group toggler' },
+	                _react2.default.createElement(
+	                  'div',
+	                  { className: 'input-group-btn' },
+	                  _react2.default.createElement(
+	                    'button',
+	                    { type: 'button', className: "btn btn-secondary" + (this.state.viewInfo ? " attended" : ""), onClick: this.setViewInfo.bind(this, true) },
+	                    'View Info'
+	                  ),
+	                  _react2.default.createElement(
+	                    'button',
+	                    { type: 'button', className: "btn btn-secondary" + (this.state.viewInfo ? "" : " attended"), onClick: this.setViewInfo.bind(this, false) },
+	                    'View Events'
+	                  )
+	                )
+	              )
+	            ),
+	            this.state.viewInfo ? this.state.editing ? this.renderEditing() : this.renderNormal() : _react2.default.createElement(_EventTracker2.default, { rusheeKey: this.state.key })
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -27677,6 +27718,266 @@
 	}(_react2.default.Component);
 
 	exports.default = UserRating;
+
+/***/ },
+/* 227 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	var _EventTrackerRow = __webpack_require__(228);
+
+	var _EventTrackerRow2 = _interopRequireDefault(_EventTrackerRow);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var EventTracker = function (_React$Component) {
+	  _inherits(EventTracker, _React$Component);
+
+	  function EventTracker(props) {
+	    _classCallCheck(this, EventTracker);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EventTracker).call(this, props));
+
+	    _this.state = {
+	      events: []
+	    };
+	    return _this;
+	  }
+
+	  _createClass(EventTracker, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.updateWithKey(nextProps.rusheeKey);
+	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.updateWithKey(this.props.rusheeKey);
+	    }
+	  }, {
+	    key: 'updateWithKey',
+	    value: function updateWithKey(key) {
+	      this.firebaseRef = _firebase2.default.database().ref('events');
+	      this.firebaseRef.orderByKey().on('value', function (dataSnapshot) {
+	        var events = [];
+	        dataSnapshot.forEach(function (childSnapshot) {
+	          var currEvent = childSnapshot.val();
+	          events.push({
+	            key: childSnapshot.key,
+	            name: currEvent.name
+	          });
+	        }.bind(this));
+
+	        this.setState({
+	          events: events
+	        });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.firebaseRef.off();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var event_comps = [];
+	      for (var i = 0; i < this.state.events.length; i++) {
+	        var currEvent = this.state.events[i];
+	        event_comps.push(_react2.default.createElement(_EventTrackerRow2.default, { key: currEvent.key, eventInfo: currEvent, rusheeKey: this.props.rusheeKey }));
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        event_comps
+	      );
+	    }
+	  }]);
+
+	  return EventTracker;
+	}(_react2.default.Component);
+
+	exports.default = EventTracker;
+
+/***/ },
+/* 228 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var LABEL_MAPPING = { "Yes": true, "?": null, "No": false };
+
+	var EventTrackerRow = function (_React$Component) {
+	  _inherits(EventTrackerRow, _React$Component);
+
+	  function EventTrackerRow(props) {
+	    _classCallCheck(this, EventTrackerRow);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(EventTrackerRow).call(this, props));
+
+	    _this.state = {
+	      attended: null,
+	      markedBy: null
+	    };
+	    return _this;
+	  }
+
+	  _createClass(EventTrackerRow, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      console.log(this.props.eventInfo);
+	      this.firebaseRef = _firebase2.default.database().ref('rushees/' + this.props.rusheeKey + '/events/' + this.props.eventInfo.key);
+	      this.firebaseRef.on('value', function (dataSnapshot) {
+	        var val = dataSnapshot.val();
+	        if (val == null) {
+	          return;
+	        }
+	        this.setState({
+	          attended: val.attended,
+	          markedBy: val.markedBy
+	        });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.firebaseRef.off();
+	    }
+	  }, {
+	    key: 'setAttendance',
+	    value: function setAttendance(status) {
+	      var user_id = _firebase2.default.auth().currentUser.uid;
+	      var user_ref = _firebase2.default.database().ref('users/' + user_id);
+	      user_ref.once('value', function (snap) {
+	        var user_name = snap.val().displayName;
+	        var newInfo = {
+	          attended: LABEL_MAPPING[status],
+	          markedBy: user_name
+	        };
+	        this.firebaseRef.set(newInfo);
+	        this.setState(newInfo);
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var buttons = [];
+	      var statusList = ["Yes", "?", "No"];
+	      for (var i = 0; i < statusList.length; i++) {
+	        var status = statusList[i];
+	        var classes = "btn btn-secondary";
+	        if (LABEL_MAPPING[status] == this.state.attended) {
+	          classes += " attended";
+	        }
+	        buttons.push(_react2.default.createElement(
+	          'button',
+	          {
+	            key: status,
+	            type: 'button',
+	            className: classes,
+	            onClick: this.setAttendance.bind(this, status)
+	          },
+	          status
+	        ));
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'row' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-xs-6 event-label' },
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            _react2.default.createElement(
+	              'strong',
+	              null,
+	              this.props.eventInfo.name
+	            )
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'col-xs-6 tooltip' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'input-group forcez' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'input-group-btn' },
+	              buttons
+	            )
+	          ),
+	          this.state.markedBy == null ? null : _react2.default.createElement(
+	            'span',
+	            { className: 'tooltiptext' },
+	            _react2.default.createElement(
+	              'p',
+	              null,
+	              _react2.default.createElement(
+	                'strong',
+	                null,
+	                'Marked by: '
+	              ),
+	              this.state.markedBy
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return EventTrackerRow;
+	}(_react2.default.Component);
+
+	exports.default = EventTrackerRow;
 
 /***/ }
 /******/ ]);

@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import CommentList from './CommentList.jsx';
 import UserRating from './UserRating.jsx';
 import AllFratRating from './AllFratRating.jsx';
+import EventTracker from './EventTracker.jsx';
 import firebase from 'firebase';
 
 var initial_fields = {
@@ -22,7 +23,8 @@ class RusheeDetail extends React.Component {
       fields: initial_fields,
       success: null,
       globalRushees: [],
-      key: null
+      key: null,
+      viewInfo: true,
     };
   }
 
@@ -93,7 +95,7 @@ class RusheeDetail extends React.Component {
 
   renderEditing() {
     return (
-      <div className="form-fields">
+      <div className="form-fields row">
         <div>
           <label>Net ID</label>
           <input
@@ -170,7 +172,7 @@ class RusheeDetail extends React.Component {
   renderNormal() {
     var rushee_obj = this.state.rushee;
     return (
-      <div>
+      <div className="row">
         <p><strong>Net ID: </strong>{rushee_obj.netID}</p>
         <p><strong>Email: </strong>{rushee_obj.email}</p>
         <p><strong>Year: </strong>{rushee_obj.year}</p>
@@ -187,7 +189,12 @@ class RusheeDetail extends React.Component {
     );
   }
 
+  setViewInfo(newState) {
+    this.setState({viewInfo: newState});
+  }
+
   render() {
+    console.log("in rushee detail");
     var rushee_obj = this.state.rushee;
     if (rushee_obj == null) {
       return (<div>Matt Sullivaning...</div>);
@@ -242,13 +249,25 @@ class RusheeDetail extends React.Component {
           </span></div>
         </div>
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-6">
             <div className="detail-img-container">
               <img className="detail-img" src={url} alt="Rushee photo"/>
             </div>
           </div>
-          <div className="col-md-4">
-            {this.state.editing ? this.renderEditing() : this.renderNormal()}
+          <div className="col-md-6">
+            <div className="row">
+              <div className="input-group toggler">
+                <div className="input-group-btn">
+                  <button type="button" className={"btn btn-secondary" + (this.state.viewInfo ? " attended" : "")} onClick={this.setViewInfo.bind(this, true)}>View Info</button>
+                  <button type="button" className={"btn btn-secondary" + (this.state.viewInfo ? "" : " attended")} onClick={this.setViewInfo.bind(this, false)}>View Events</button>
+                </div>
+              </div>
+            </div>
+            {
+              this.state.viewInfo ?
+              (this.state.editing ? this.renderEditing() : this.renderNormal())
+              : <EventTracker rusheeKey={this.state.key}/>
+            }
           </div>
         </div>
         <div className="row">

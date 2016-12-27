@@ -26,6 +26,14 @@
       ".read": "auth != null",
       ".write": "auth != null",
       ".indexOn": "date"
+    },
+    "settings": {
+      ".read": "auth != null",
+      ".write": "false"
+    },
+    "events": {
+      ".read": "auth != null",
+      ".write": "false"
     }
   }
 }

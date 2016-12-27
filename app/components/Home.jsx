@@ -137,10 +137,8 @@ class Home extends React.Component {
     })
   }
 
-  toggleFeed() {
-    this.setState({
-      showFeed: !this.state.showFeed
-    });
+  setShowFeed(newState) {
+    this.setState({ showFeed: newState });
   }
 
   render() {
@@ -174,12 +172,12 @@ class Home extends React.Component {
     return (
       <div className="container-fluid">
         <div className="row feed-button">
-          <button
-            className="btn btn-primary"
-            onClick={this.toggleFeed.bind(this)}
-          >
-            {this.state.showFeed ? "Show Rushees" : "Show Feed"}
-          </button>
+          <div className="input-group toggler">
+            <div className="input-group-btn">
+              <button type="button" className={"btn btn-secondary" + (this.state.showFeed ? "" : " attended")} onClick={this.setShowFeed.bind(this, false)}>Rushees</button>
+              <button type="button" className={"btn btn-secondary" + (this.state.showFeed ? " attended" : "")} onClick={this.setShowFeed.bind(this, true)}>Feed</button>
+            </div>
+          </div>
         </div>
         <div className="row">
           <div className={"col-md-3 sidebar" + (this.state.showFeed ? "" : " hidden")}>
