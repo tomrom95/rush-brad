@@ -16,7 +16,8 @@
     },
     "rushees": {
       ".read": "auth != null",
-      ".write": "auth != null"
+      ".write": "auth != null",
+      ".indexOn": "isCut"
     },
     "comments": {
       ".read": "auth != null",

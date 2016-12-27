@@ -25024,6 +25024,8 @@
 	  }
 	};
 
+	var DECIDER_MAPPING = { "Yes": true, "Maybe": null, "Cut": false };
+
 	var Home = function (_React$Component) {
 	  _inherits(Home, _React$Component);
 
@@ -25034,13 +25036,15 @@
 
 	    var order = localStorage.getItem('sortOrder') || 'First Name A-Z';
 	    var search = localStorage.getItem('searchText') || '';
+	    var statusFilter = localStorage.getItem('statusFilter') || 'Maybe';
 	    _this.state = {
 	      rushees: [],
 	      sortOrder: order,
 	      searchText: search,
 	      showModal: false,
 	      selectedRushee: null,
-	      showFeed: false
+	      showFeed: false,
+	      statusFilter: statusFilter
 	    };
 	    return _this;
 	  }
@@ -25049,7 +25053,7 @@
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
 	      this.firebaseRef = _firebase2.default.database().ref('rushees');
-	      this.firebaseRef.on('value', function (dataSnapshot) {
+	      this.firebaseRef.orderByChild('isCut').equalTo(null).on('value', function (dataSnapshot) {
 	        var rushees = [];
 	        dataSnapshot.forEach(function (childSnapshot) {
 	          var rushee = childSnapshot.val();
@@ -25117,6 +25121,13 @@
 	      });
 	    }
 	  }, {
+	    key: 'setStatusFilter',
+	    value: function setStatusFilter(event) {
+	      var status = event.target.value;
+	      localStorage.setItem('statusFilter', status);
+	      this.setState({ statusFilter: status });
+	    }
+	  }, {
 	    key: 'handleSearch',
 	    value: function handleSearch(e) {
 	      localStorage.setItem('searchText', e.target.value);
@@ -25157,7 +25168,7 @@
 	      };
 	      var rusheeList = this.state.rushees.filter(function (rushee) {
 	        var name = rushee.firstName + ' ' + rushee.lastName;
-	        return name.toLowerCase().includes(this.state.searchText.toLowerCase());
+	        return name.toLowerCase().includes(this.state.searchText.toLowerCase()) && rushee.roundStatus == DECIDER_MAPPING[this.state.statusFilter];
 	      }.bind(this));
 	      localStorage.setItem('globalRusheeList', JSON.stringify(this.getKeyList(rusheeList)));
 	      console.log('preparing for ;alsjdf;lkja');
@@ -25231,6 +25242,25 @@
 	                  onChange: this.handleSearch.bind(this),
 	                  value: this.state.searchText
 	                })
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(
+	                'label',
+	                null,
+	                'Round Status: '
+	              ),
+	              _react2.default.createElement(
+	                'select',
+	                {
+	                  className: 'form-control filter',
+	                  ref: 'year',
+	                  defaultValue: this.state.statusFilter,
+	                  onChange: this.setStatusFilter.bind(this)
+	                },
+	                Object.keys(DECIDER_MAPPING).map(createSortSelection)
 	              )
 	            ),
 	            _react2.default.createElement(
@@ -26400,6 +26430,10 @@
 
 	var _EventTracker2 = _interopRequireDefault(_EventTracker);
 
+	var _RusheeDecider = __webpack_require__(229);
+
+	var _RusheeDecider2 = _interopRequireDefault(_RusheeDecider);
+
 	var _firebase = __webpack_require__(210);
 
 	var _firebase2 = _interopRequireDefault(_firebase);
@@ -26784,10 +26818,21 @@
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'col-md-6' },
+	            _react2.default.createElement(_RusheeDecider2.default, { rusheeKey: this.state.key }),
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'detail-img-container' },
 	              _react2.default.createElement('img', { className: 'detail-img', src: url, alt: 'Rushee photo' })
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(_AllFratRating2.default, { rusheeKey: this.state.key })
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(_UserRating2.default, { rusheeKey: this.state.key })
 	            )
 	          ),
 	          _react2.default.createElement(
@@ -26816,24 +26861,6 @@
 	              )
 	            ),
 	            this.state.viewInfo ? this.state.editing ? this.renderEditing() : this.renderNormal() : _react2.default.createElement(_EventTracker2.default, { rusheeKey: this.state.key })
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'row' },
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'col-xs-8' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'row' },
-	              _react2.default.createElement(_AllFratRating2.default, { rusheeKey: this.state.key })
-	            ),
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'row' },
-	              _react2.default.createElement(_UserRating2.default, { rusheeKey: this.state.key })
-	            )
 	          )
 	        ),
 	        _react2.default.createElement(
@@ -27978,6 +28005,136 @@
 	}(_react2.default.Component);
 
 	exports.default = EventTrackerRow;
+
+/***/ },
+/* 229 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var DECIDER_MAPPING = { "Yes": true, "Maybe": null, "Cut": false };
+
+	var RusheeDecider = function (_React$Component) {
+	  _inherits(RusheeDecider, _React$Component);
+
+	  function RusheeDecider(props) {
+	    _classCallCheck(this, RusheeDecider);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RusheeDecider).call(this, props));
+
+	    _this.state = {
+	      isAdmin: false,
+	      rusheeStatus: null
+	    };
+	    return _this;
+	  }
+
+	  _createClass(RusheeDecider, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.updateWithKey(nextProps.rusheeKey);
+	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.updateWithKey(this.props.rusheeKey);
+	    }
+	  }, {
+	    key: 'updateWithKey',
+	    value: function updateWithKey(key) {
+	      var userRef = _firebase2.default.database().ref('users/' + _firebase2.default.auth().currentUser.uid + '/admin');
+	      this.firebaseRef = _firebase2.default.database().ref('rushees/' + key + '/roundStatus');
+	      userRef.on('value', function (dataSnapshot) {
+	        var val = dataSnapshot.val();
+	        if (val != null) {
+	          this.setState({ isAdmin: true });
+	        }
+	        this.firebaseRef.on('value', function (dataSnapshot) {
+	          this.setState({ rusheeStatus: dataSnapshot.val() });
+	        }.bind(this));
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.firebaseRef.off();
+	    }
+	  }, {
+	    key: 'setDecision',
+	    value: function setDecision(status) {
+	      var statusVal = DECIDER_MAPPING[status];
+	      this.firebaseRef.set(statusVal);
+	      this.setState({ rusheeStatus: statusVal });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      if (!this.state.isAdmin) {
+	        return null;
+	      }
+	      var buttons = [];
+	      var statusList = ["Yes", "Maybe", "Cut"];
+	      for (var i = 0; i < statusList.length; i++) {
+	        var status = statusList[i];
+	        var classes = "btn btn-default";
+	        if (DECIDER_MAPPING[status] == this.state.rusheeStatus) {
+	          classes += " btn-" + status;
+	        }
+	        buttons.push(_react2.default.createElement(
+	          'button',
+	          {
+	            key: status,
+	            type: 'button',
+	            className: classes,
+	            onClick: this.setDecision.bind(this, status)
+	          },
+	          status
+	        ));
+	      }
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'row toggler' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'input-group' },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'input-group-btn' },
+	            buttons
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return RusheeDecider;
+	}(_react2.default.Component);
+
+	exports.default = RusheeDecider;
 
 /***/ }
 /******/ ]);

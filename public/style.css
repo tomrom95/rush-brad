@@ -5,6 +5,31 @@
   background-color: #025aa5;
 }
 
+.btn-default {
+  color: #373a3c;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.btn-default:hover {
+  background-color: #e6e6e6
+}
+
+.btn-Yes, .btn-Yes:hover {
+  color: white;
+  background-color: green;
+}
+
+.btn-Maybe, .btn-Maybe:hover {
+  color: white;
+  background-color: orange;
+}
+
+.btn-Cut, .btn-Cut:hover {
+  color: white;
+  background-color: red;
+}
+
 .toggler {
   padding-top:5px;
   padding-bottom:5px;

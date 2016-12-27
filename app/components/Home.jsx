@@ -43,24 +43,28 @@ var orderings = {
   }
 }
 
+const DECIDER_MAPPING = {"Yes": true, "Maybe": null, "Cut": false};
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
     var order = localStorage.getItem('sortOrder') || 'First Name A-Z';
     var search = localStorage.getItem('searchText') || '';
+    var statusFilter = localStorage.getItem('statusFilter') || 'Maybe';
     this.state = {
       rushees: [],
       sortOrder: order,
       searchText: search,
       showModal: false,
       selectedRushee: null,
-      showFeed: false
+      showFeed: false,
+      statusFilter: statusFilter
     };
   }
 
   componentWillMount() {
     this.firebaseRef = firebase.database().ref('rushees');
-    this.firebaseRef.on('value', function(dataSnapshot) {
+    this.firebaseRef.orderByChild('isCut').equalTo(null).on('value', function(dataSnapshot) {
       var rushees = [];
       dataSnapshot.forEach(function(childSnapshot) {
         var rushee = childSnapshot.val();
@@ -126,6 +130,12 @@ class Home extends React.Component {
     });
   }
 
+  setStatusFilter(event) {
+    var status = event.target.value;
+    localStorage.setItem('statusFilter', status);
+    this.setState({statusFilter: status});
+  }
+
   handleSearch(e) {
     localStorage.setItem('searchText', e.target.value);
     this.setState({searchText: e.target.value});
@@ -162,7 +172,8 @@ class Home extends React.Component {
     }
     var rusheeList = this.state.rushees.filter(function(rushee) {
       var name = rushee.firstName + ' ' + rushee.lastName;
-      return name.toLowerCase().includes(this.state.searchText.toLowerCase());
+      return name.toLowerCase().includes(this.state.searchText.toLowerCase())
+        && (rushee.roundStatus == DECIDER_MAPPING[this.state.statusFilter]);
     }.bind(this));
     localStorage.setItem(
       'globalRusheeList',
@@ -203,6 +214,17 @@ class Home extends React.Component {
                   value={ this.state.searchText }
                 />
               </div>
+            </div>
+            <div className="row">
+              <label>Round Status:&nbsp;</label>
+              <select
+                className="form-control filter"
+                ref="year"
+                defaultValue={this.state.statusFilter}
+                onChange={this.setStatusFilter.bind(this)}
+              >
+                { Object.keys(DECIDER_MAPPING).map(createSortSelection)}
+              </select>
             </div>
             <div className="row">
               <div className="card-deck-wrapper">

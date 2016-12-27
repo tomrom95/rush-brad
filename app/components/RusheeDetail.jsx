@@ -4,6 +4,7 @@ import CommentList from './CommentList.jsx';
 import UserRating from './UserRating.jsx';
 import AllFratRating from './AllFratRating.jsx';
 import EventTracker from './EventTracker.jsx';
+import RusheeDecider from './RusheeDecider.jsx';
 import firebase from 'firebase';
 
 var initial_fields = {
@@ -250,8 +251,15 @@ class RusheeDetail extends React.Component {
         </div>
         <div className="row">
           <div className="col-md-6">
+            <RusheeDecider rusheeKey={this.state.key}/>
             <div className="detail-img-container">
               <img className="detail-img" src={url} alt="Rushee photo"/>
+            </div>
+            <div className="row">
+              <AllFratRating rusheeKey={this.state.key} />
+            </div>
+            <div className="row">
+              <UserRating rusheeKey={this.state.key} />
             </div>
           </div>
           <div className="col-md-6">
@@ -268,16 +276,6 @@ class RusheeDetail extends React.Component {
               (this.state.editing ? this.renderEditing() : this.renderNormal())
               : <EventTracker rusheeKey={this.state.key}/>
             }
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-xs-8">
-            <div className="row">
-              <AllFratRating rusheeKey={this.state.key} />
-            </div>
-            <div className="row">
-              <UserRating rusheeKey={this.state.key} />
-            </div>
           </div>
         </div>
         <div className="row">
