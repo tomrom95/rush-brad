@@ -59,6 +59,7 @@ class CommentVoter extends React.Component {
       vote: vote,
       rushee: this.props.rusheeKey,
       user: this.props.commentRef.val().author,
+      commentKey: this.props.commentRef.ref.key,
       date: new Date().getTime()
     });
   }

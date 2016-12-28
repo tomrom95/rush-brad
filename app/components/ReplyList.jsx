@@ -43,7 +43,7 @@ class ReplyList extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     if (this.state.text && this.state.text.trim().length !== 0) {
-      this.firebaseRef.push({
+      var replyRef = this.firebaseRef.push({
         text: this.state.text,
         date: new Date().getTime(),
         author: firebase.auth().currentUser.uid
@@ -53,7 +53,9 @@ class ReplyList extends React.Component {
         type: "reply",
         rushee: this.props.rusheeKey,
         user: this.props.commentRef.val().author,
-        date: new Date().getTime()
+        date: new Date().getTime(),
+        commentKey: this.props.commentRef.ref.key,
+        replyKey: replyRef.key
       });
       this.setState({
         text: ''

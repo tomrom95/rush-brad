@@ -49,7 +49,7 @@ class CommentList extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     if (this.state.text && this.state.text.trim().length !== 0) {
-      this.firebaseRef.push({
+      var commentRef = this.firebaseRef.push({
         text: this.state.text,
         date: new Date().getTime(),
         author: firebase.auth().currentUser.uid
@@ -58,7 +58,8 @@ class CommentList extends React.Component {
         actor: firebase.auth().currentUser.uid,
         type: "comment",
         rushee: this.props.rusheeKey,
-        date: new Date().getTime()
+        date: new Date().getTime(),
+        commentKey: commentRef.key
       });
       this.setState({
         text: ''

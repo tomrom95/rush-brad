@@ -10,6 +10,7 @@ class FeedRow extends React.Component {
       actorName: "",
       userName: "",
       rusheeName: "",
+      detailText: null,
     };
   }
 
@@ -31,6 +32,26 @@ class FeedRow extends React.Component {
           });
         }.bind(this));
     }
+    if (this.props.feedEvent.replyKey != null) {
+      firebase.database().ref(
+        'comments/' + this.props.feedEvent.rushee + '/' +
+          this.props.feedEvent.commentKey + '/replies/' +
+          this.props.feedEvent.replyKey
+      ).once('value', function(snap) {
+        this.setState({
+          detailText: snap.val().text
+        });
+      }.bind(this));
+    } else if (this.props.feedEvent.commentKey != null) {
+      firebase.database().ref(
+        'comments/' + this.props.feedEvent.rushee + '/' +
+          this.props.feedEvent.commentKey
+      ).once('value', function(snap) {
+        this.setState({
+          detailText: snap.val().text
+        });
+      }.bind(this));
+    }
     firebase.database().ref('rushees/' + this.props.feedEvent.rushee)
       .once('value', function(snap) {
         var val = snap.val();
@@ -42,21 +63,32 @@ class FeedRow extends React.Component {
 
   render() {
     var text = null;
+    var detailNode = this.state.detailText == null ? null :
+      (<p className="detail-text">{'"' + this.state.detailText + '"'}</p>);
     switch (this.state.feedEvent.type) {
       case "comment":
         text = (
+          <span>
           <p><b>{this.state.actorName}</b>{" commented on "}<b>{this.state.rusheeName}</b></p>
+          {detailNode}
+          </span>
         );
         break;
       case "comment_vote":
         var vote = this.state.feedEvent.vote == 1 ? "upvoted" : "downvoted";
         text = (
-          <p><b>{this.state.actorName}</b>{" " + vote + " "}<b>{this.state.userName}</b>{"'s comment on "}<b>{this.state.rusheeName}</b></p>
+          <span>
+            <p><b>{this.state.actorName}</b>{" " + vote + " "}<b>{this.state.userName}</b>{"'s comment on "}<b>{this.state.rusheeName}</b></p>
+            {detailNode}
+          </span>
         );
         break;
       case "reply":
         text = (
+          <span>
           <p><b>{this.state.actorName}</b>{" replied to "}<b>{this.state.userName}</b>{"'s comment on "}<b>{this.state.rusheeName}</b></p>
+          {detailNode}
+          </span>
         );
         break;
       case "rushee_added":

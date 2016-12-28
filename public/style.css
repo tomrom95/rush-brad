@@ -5,6 +5,12 @@
   background-color: #025aa5;
 }
 
+.detail-text {
+  margin-left: 5px;
+  margin-right: 5px;
+  color: gray;
+}
+
 .btn-default {
   color: #373a3c;
   border: 1px solid #ccc;

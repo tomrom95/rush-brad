@@ -25962,7 +25962,8 @@
 	      feedEvent: null,
 	      actorName: "",
 	      userName: "",
-	      rusheeName: ""
+	      rusheeName: "",
+	      detailText: null
 	    };
 	    return _this;
 	  }
@@ -25985,6 +25986,19 @@
 	          });
 	        }.bind(this));
 	      }
+	      if (this.props.feedEvent.replyKey != null) {
+	        _firebase2.default.database().ref('comments/' + this.props.feedEvent.rushee + '/' + this.props.feedEvent.commentKey + '/replies/' + this.props.feedEvent.replyKey).once('value', function (snap) {
+	          this.setState({
+	            detailText: snap.val().text
+	          });
+	        }.bind(this));
+	      } else if (this.props.feedEvent.commentKey != null) {
+	        _firebase2.default.database().ref('comments/' + this.props.feedEvent.rushee + '/' + this.props.feedEvent.commentKey).once('value', function (snap) {
+	          this.setState({
+	            detailText: snap.val().text
+	          });
+	        }.bind(this));
+	      }
 	      _firebase2.default.database().ref('rushees/' + this.props.feedEvent.rushee).once('value', function (snap) {
 	        var val = snap.val();
 	        this.setState({
@@ -25996,69 +26010,89 @@
 	    key: 'render',
 	    value: function render() {
 	      var text = null;
+	      var detailNode = this.state.detailText == null ? null : _react2.default.createElement(
+	        'p',
+	        { className: 'detail-text' },
+	        '"' + this.state.detailText + '"'
+	      );
 	      switch (this.state.feedEvent.type) {
 	        case "comment":
 	          text = _react2.default.createElement(
-	            'p',
+	            'span',
 	            null,
 	            _react2.default.createElement(
-	              'b',
+	              'p',
 	              null,
-	              this.state.actorName
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                this.state.actorName
+	              ),
+	              " commented on ",
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                this.state.rusheeName
+	              )
 	            ),
-	            " commented on ",
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              this.state.rusheeName
-	            )
+	            detailNode
 	          );
 	          break;
 	        case "comment_vote":
 	          var vote = this.state.feedEvent.vote == 1 ? "upvoted" : "downvoted";
 	          text = _react2.default.createElement(
-	            'p',
+	            'span',
 	            null,
 	            _react2.default.createElement(
-	              'b',
+	              'p',
 	              null,
-	              this.state.actorName
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                this.state.actorName
+	              ),
+	              " " + vote + " ",
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                this.state.userName
+	              ),
+	              "'s comment on ",
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                this.state.rusheeName
+	              )
 	            ),
-	            " " + vote + " ",
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              this.state.userName
-	            ),
-	            "'s comment on ",
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              this.state.rusheeName
-	            )
+	            detailNode
 	          );
 	          break;
 	        case "reply":
 	          text = _react2.default.createElement(
-	            'p',
+	            'span',
 	            null,
 	            _react2.default.createElement(
-	              'b',
+	              'p',
 	              null,
-	              this.state.actorName
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                this.state.actorName
+	              ),
+	              " replied to ",
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                this.state.userName
+	              ),
+	              "'s comment on ",
+	              _react2.default.createElement(
+	                'b',
+	                null,
+	                this.state.rusheeName
+	              )
 	            ),
-	            " replied to ",
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              this.state.userName
-	            ),
-	            "'s comment on ",
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              this.state.rusheeName
-	            )
+	            detailNode
 	          );
 	          break;
 	        case "rushee_added":
@@ -26968,7 +27002,7 @@
 	    value: function handleSubmit(e) {
 	      e.preventDefault();
 	      if (this.state.text && this.state.text.trim().length !== 0) {
-	        this.firebaseRef.push({
+	        var commentRef = this.firebaseRef.push({
 	          text: this.state.text,
 	          date: new Date().getTime(),
 	          author: _firebase2.default.auth().currentUser.uid
@@ -26977,7 +27011,8 @@
 	          actor: _firebase2.default.auth().currentUser.uid,
 	          type: "comment",
 	          rushee: this.props.rusheeKey,
-	          date: new Date().getTime()
+	          date: new Date().getTime(),
+	          commentKey: commentRef.key
 	        });
 	        this.setState({
 	          text: ''
@@ -27297,6 +27332,7 @@
 	        vote: vote,
 	        rushee: this.props.rusheeKey,
 	        user: this.props.commentRef.val().author,
+	        commentKey: this.props.commentRef.ref.key,
 	        date: new Date().getTime()
 	      });
 	    }
@@ -27424,7 +27460,7 @@
 	    value: function handleSubmit(e) {
 	      e.preventDefault();
 	      if (this.state.text && this.state.text.trim().length !== 0) {
-	        this.firebaseRef.push({
+	        var replyRef = this.firebaseRef.push({
 	          text: this.state.text,
 	          date: new Date().getTime(),
 	          author: _firebase2.default.auth().currentUser.uid
@@ -27434,7 +27470,9 @@
 	          type: "reply",
 	          rushee: this.props.rusheeKey,
 	          user: this.props.commentRef.val().author,
-	          date: new Date().getTime()
+	          date: new Date().getTime(),
+	          commentKey: this.props.commentRef.ref.key,
+	          replyKey: replyRef.key
 	        });
 	        this.setState({
 	          text: ''
