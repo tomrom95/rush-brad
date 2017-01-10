@@ -5,6 +5,7 @@ import UserRating from './UserRating.jsx';
 import AllFratRating from './AllFratRating.jsx';
 import EventTracker from './EventTracker.jsx';
 import RusheeDecider from './RusheeDecider.jsx';
+import ListDisplay from './ListDisplay.jsx';
 import firebase from 'firebase';
 
 var initial_fields = {
@@ -62,7 +63,6 @@ class RusheeDetail extends React.Component {
       this.setState({
         rushee: rushee,
         fields: {
-          netID: rushee.netID,
           email: rushee.email,
           year: rushee.year,
           phoneNumber: rushee.phoneNumber,
@@ -76,7 +76,6 @@ class RusheeDetail extends React.Component {
 
   editRushee() {
     var data = {
-      netID: this.refs.netID.value,
       email: this.refs.email.value,
       phoneNumber: this.refs.phoneNumber.value,
       year: this.refs.year.value,
@@ -97,15 +96,6 @@ class RusheeDetail extends React.Component {
   renderEditing() {
     return (
       <div className="form-fields row">
-        <div>
-          <label>Net ID</label>
-          <input
-            className="form-control"
-            type="netID"
-            ref="netID"
-            defaultValue={this.state.fields.netID}
-          />
-        </div>
         <div>
           <label>Email</label>
           <input
@@ -178,6 +168,14 @@ class RusheeDetail extends React.Component {
         <p><strong>Email: </strong>{rushee_obj.email}</p>
         <p><strong>Year: </strong>{rushee_obj.year}</p>
         <p><strong>Phone Number: </strong>{rushee_obj.phoneNumber}</p>
+        <p><strong>Major: </strong>{rushee_obj.major}</p>
+        <p><strong>Hometown: </strong>{rushee_obj.hometown}</p>
+        <p>{"'" + (rushee_obj.inACoffin == null ? "" : rushee_obj.inACoffin)  + "'"} <strong>in a Coffin</strong></p>
+        <p><strong>When attending a soiree, what must every dude bring&#63; </strong>{rushee_obj.everyDude}</p>
+        <p><strong>What is the necessary complement to sleeping&#63; </strong>{rushee_obj.sleepAndHike}</p>
+        <p><strong>1's and 5's&#63; </strong>{rushee_obj.onesAndFives}</p>
+        <ListDisplay label="Activities" key={"rushees/" + this.state.key + "/activities"}></ListDisplay>
+        <ListDisplay label="Rushing With" key={"rushees/" + this.state.key + "/rushingWith"}></ListDisplay>
         <p>
           <button
             className="btn btn-primary pull-right"

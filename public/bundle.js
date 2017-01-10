@@ -26468,6 +26468,10 @@
 
 	var _RusheeDecider2 = _interopRequireDefault(_RusheeDecider);
 
+	var _ListDisplay = __webpack_require__(230);
+
+	var _ListDisplay2 = _interopRequireDefault(_ListDisplay);
+
 	var _firebase = __webpack_require__(210);
 
 	var _firebase2 = _interopRequireDefault(_firebase);
@@ -26545,7 +26549,6 @@
 	        this.setState({
 	          rushee: rushee,
 	          fields: {
-	            netID: rushee.netID,
 	            email: rushee.email,
 	            year: rushee.year,
 	            phoneNumber: rushee.phoneNumber,
@@ -26560,7 +26563,6 @@
 	    key: 'editRushee',
 	    value: function editRushee() {
 	      var data = {
-	        netID: this.refs.netID.value,
 	        email: this.refs.email.value,
 	        phoneNumber: this.refs.phoneNumber.value,
 	        year: this.refs.year.value,
@@ -26580,21 +26582,6 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'form-fields row' },
-	        _react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(
-	            'label',
-	            null,
-	            'Net ID'
-	          ),
-	          _react2.default.createElement('input', {
-	            className: 'form-control',
-	            type: 'netID',
-	            ref: 'netID',
-	            defaultValue: this.state.fields.netID
-	          })
-	        ),
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -26751,6 +26738,69 @@
 	          ),
 	          rushee_obj.phoneNumber
 	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'Major: '
+	          ),
+	          rushee_obj.major
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'Hometown: '
+	          ),
+	          rushee_obj.hometown
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          "'" + (rushee_obj.inACoffin == null ? "" : rushee_obj.inACoffin) + "'",
+	          ' ',
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'in a Coffin'
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'When attending a soiree, what must every dude bring? '
+	          ),
+	          rushee_obj.everyDude
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            'What is the necessary complement to sleeping? '
+	          ),
+	          rushee_obj.sleepAndHike
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          _react2.default.createElement(
+	            'strong',
+	            null,
+	            '1\'s and 5\'s? '
+	          ),
+	          rushee_obj.onesAndFives
+	        ),
+	        _react2.default.createElement(_ListDisplay2.default, { label: 'Activities', key: "rushees/" + this.state.key + "/activities" }),
+	        _react2.default.createElement(_ListDisplay2.default, { label: 'Rushing With', key: "rushees/" + this.state.key + "/rushingWith" }),
 	        _react2.default.createElement(
 	          'p',
 	          null,
@@ -28173,6 +28223,108 @@
 	}(_react2.default.Component);
 
 	exports.default = RusheeDecider;
+
+/***/ },
+/* 230 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(159);
+
+	var _firebase = __webpack_require__(210);
+
+	var _firebase2 = _interopRequireDefault(_firebase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var ListDisplay = function (_React$Component) {
+	  _inherits(ListDisplay, _React$Component);
+
+	  function ListDisplay(props) {
+	    _classCallCheck(this, ListDisplay);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ListDisplay).call(this, props));
+
+	    _this.state = {
+	      items: []
+	    };
+	    return _this;
+	  }
+
+	  _createClass(ListDisplay, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.updateWithKey(nextProps.key);
+	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.updateWithKey(this.props.key);
+	    }
+	  }, {
+	    key: 'updateWithKey',
+	    value: function updateWithKey(key) {
+	      this.firebaseRef = _firebase2.default.database().ref(key);
+	      this.firebaseRef.on('value', function (dataSnapshot) {
+	        var items = [];
+	        dataSnapshot.forEach(function (childSnapshot) {
+	          var item = childSnapshot.val();
+	          items.push(item);
+	        }.bind(this));
+	        this.setState({
+	          items: items
+	        });
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      this.firebaseRef.off();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var itemString = "";
+	      for (var i = 0; i < this.state.items.length; i++) {
+	        itemString += this.state.items[i];
+	        if (i != this.state.items.length - 1) {
+	          itemString += ", ";
+	        }
+	      }
+	      return _react2.default.createElement(
+	        'p',
+	        null,
+	        _react2.default.createElement(
+	          'strong',
+	          null,
+	          this.props.label + ": "
+	        ),
+	        itemString
+	      );
+	    }
+	  }]);
+
+	  return ListDisplay;
+	}(_react2.default.Component);
+
+	exports.default = ListDisplay;
 
 /***/ }
 /******/ ]);
