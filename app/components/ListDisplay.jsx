@@ -11,16 +11,20 @@ class ListDisplay extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.updateWithKey(nextProps.key);
+    this.updateWithKey(nextProps.listKey);
   }
 
   componentWillMount() {
-    this.updateWithKey(this.props.key);
+    this.updateWithKey(this.props.listKey);
   }
 
   updateWithKey(key) {
+    console.log("in list display");
     this.firebaseRef = firebase.database().ref(key);
+    console.log(key);
     this.firebaseRef.on('value', function(dataSnapshot) {
+      console.log("got list display value");
+      console.log(dataSnapshot.val());
       var items = [];
       dataSnapshot.forEach(function(childSnapshot) {
         var item = childSnapshot.val();

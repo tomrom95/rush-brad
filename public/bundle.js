@@ -26799,8 +26799,8 @@
 	          ),
 	          rushee_obj.onesAndFives
 	        ),
-	        _react2.default.createElement(_ListDisplay2.default, { label: 'Activities', key: "rushees/" + this.state.key + "/activities" }),
-	        _react2.default.createElement(_ListDisplay2.default, { label: 'Rushing With', key: "rushees/" + this.state.key + "/rushingWith" }),
+	        _react2.default.createElement(_ListDisplay2.default, { label: 'Activities', listKey: "rushees/" + this.state.key + "/activities" }),
+	        _react2.default.createElement(_ListDisplay2.default, { label: 'Rushing With', listKey: "rushees/" + this.state.key + "/rushingWith" }),
 	        _react2.default.createElement(
 	          'p',
 	          null,
@@ -27985,13 +27985,27 @@
 	  }
 
 	  _createClass(EventTrackerRow, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      this.updateWithProps(nextProps.rusheeKey, nextProps.eventInfo.key);
+	    }
+	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      console.log(this.props.eventInfo);
-	      this.firebaseRef = _firebase2.default.database().ref('rushees/' + this.props.rusheeKey + '/events/' + this.props.eventInfo.key);
+	      console.log("mounting row");
+	      this.updateWithProps(this.props.rusheeKey, this.props.eventInfo.key);
+	    }
+	  }, {
+	    key: 'updateWithProps',
+	    value: function updateWithProps(rusheeKey, eventInfoKey) {
+	      this.firebaseRef = _firebase2.default.database().ref('rushees/' + rusheeKey + '/events/' + eventInfoKey);
 	      this.firebaseRef.on('value', function (dataSnapshot) {
 	        var val = dataSnapshot.val();
 	        if (val == null) {
+	          this.setState({
+	            attended: null,
+	            markedBy: null
+	          });
 	          return;
 	        }
 	        this.setState({
@@ -28271,18 +28285,22 @@
 	  _createClass(ListDisplay, [{
 	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nextProps) {
-	      this.updateWithKey(nextProps.key);
+	      this.updateWithKey(nextProps.listKey);
 	    }
 	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      this.updateWithKey(this.props.key);
+	      this.updateWithKey(this.props.listKey);
 	    }
 	  }, {
 	    key: 'updateWithKey',
 	    value: function updateWithKey(key) {
+	      console.log("in list display");
 	      this.firebaseRef = _firebase2.default.database().ref(key);
+	      console.log(key);
 	      this.firebaseRef.on('value', function (dataSnapshot) {
+	        console.log("got list display value");
+	        console.log(dataSnapshot.val());
 	        var items = [];
 	        dataSnapshot.forEach(function (childSnapshot) {
 	          var item = childSnapshot.val();

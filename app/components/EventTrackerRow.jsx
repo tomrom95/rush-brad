@@ -13,14 +13,26 @@ class EventTrackerRow extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.updateWithProps(nextProps.rusheeKey, nextProps.eventInfo.key);
+  }
+
   componentWillMount() {
-    console.log(this.props.eventInfo);
+    console.log("mounting row");
+    this.updateWithProps(this.props.rusheeKey, this.props.eventInfo.key);
+  }
+
+  updateWithProps(rusheeKey, eventInfoKey) {
     this.firebaseRef = firebase.database().ref(
-      'rushees/' + this.props.rusheeKey + '/events/' + this.props.eventInfo.key
+      'rushees/' + rusheeKey + '/events/' + eventInfoKey
     );
     this.firebaseRef.on('value', function(dataSnapshot) {
       var val = dataSnapshot.val();
       if (val == null) {
+        this.setState({
+          attended: null,
+          markedBy: null
+        });
         return;
       }
       this.setState({

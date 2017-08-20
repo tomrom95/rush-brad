@@ -174,8 +174,8 @@ class RusheeDetail extends React.Component {
         <p><strong>When attending a soiree, what must every dude bring&#63; </strong>{rushee_obj.everyDude}</p>
         <p><strong>What is the necessary complement to sleeping&#63; </strong>{rushee_obj.sleepAndHike}</p>
         <p><strong>1's and 5's&#63; </strong>{rushee_obj.onesAndFives}</p>
-        <ListDisplay label="Activities" key={"rushees/" + this.state.key + "/activities"}></ListDisplay>
-        <ListDisplay label="Rushing With" key={"rushees/" + this.state.key + "/rushingWith"}></ListDisplay>
+        <ListDisplay label="Activities" listKey={"rushees/" + this.state.key + "/activities"}></ListDisplay>
+        <ListDisplay label="Rushing With" listKey={"rushees/" + this.state.key + "/rushingWith"}></ListDisplay>
         <p>
           <button
             className="btn btn-primary pull-right"
